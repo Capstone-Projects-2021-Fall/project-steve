@@ -1,7 +1,8 @@
 class SpeakerControl:
     volume = 0
 
-    # def __init__(self):
+    def __init__(self):
+        pass
 
     # Parameters:
     #     - volume is an int indicating the desired volume level for speakers

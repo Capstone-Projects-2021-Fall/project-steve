@@ -1,5 +1,8 @@
 class CameraControl:
 
+    def __init__(self):
+        pass
+
     # Parameters:
     #     - None
     #
