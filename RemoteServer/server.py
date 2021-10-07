@@ -7,17 +7,41 @@ app = Flask(__name__)
 @app.route("/")
 def hello_world():
     # default route, i.e. home page
-    return "<p>Hello, World!</p>"
+    return "<p>Hello, STEVE!</p>"
 
 
-@app.route("/sampleGetRequest", methods=['GET'])
-def sample_get_request():
-    # do whatever logic needed to retrieve data
+# Parameters:
+# - route is a String representing the name of a given route
+#
+# Description:
+# - Receives & processes a request from an HMI (either the mobile app
+#   or Amazon Alexa enabled device) to the route with the given name
+#
+# Return:
+# - Returns a JSONObject containing:
+# 	-status: either “OK” or “FAILED”
+@app.route("/beginRouteRequest", methods=['POST'])
+def begin_route_request():
+    request_data = request.get_json(silent=True)
+    print(request_data)
+    # do whatever logic needed to process request
     return {"data": "somedata"}
 
 
-@app.route("/samplePostRequest", methods=['POST'])
-def sample_post_request():
+# Parameters:
+# - speed is a double between 0 and 1, 0 being not moving, 1 being moving at max speed
+# - turnVal is a double between -1 and 1, 0 being straight, -1 being all the way left, 1 being all the way right
+# 	- image is an image object
+#
+# Description:
+# - Receives the state information (all of the parameters) of the RC car
+#   so it can process the information & decide on what instructions to give next
+#
+# Return:
+# - Returns a JSONObject containing:
+# 	-status: either “OK” or “FAILED”
+@app.route("/receiveStatusUpdate", methods=['POST'])
+def receive_status_update():
     request_data = request.get_json(silent=True)
     print(request_data)
     # do whatever logic needed to process request
