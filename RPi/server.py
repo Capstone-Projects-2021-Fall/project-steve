@@ -10,18 +10,41 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-@app.route("/sampleGetRequest", methods=['GET'])
-def sample_get_request():
-    # do whatever logic needed to retrieve data
-    return {"data": "somedata"}
-
-
-@app.route("/samplePostRequest", methods=['POST'])
-def sample_post_request():
+# Parameters:
+# - Route: A string containing an identifier for the requested route
+#
+# Description:
+# - Begins routing the STEVE car. The RPi will communicate with the Remote Server
+#   to receive information about obstacles in the way of the car, as well as to
+#   provide metadata about the current status of the route
+#
+# Return:
+# - Returns a JSONObject containing:
+# -status: either “OK” or “FAILED”
+@app.route("/startRoute", methods=['POST'])
+def startRoute():
     request_data = request.get_json(silent=True)
     print(request_data)
     # do whatever logic needed to process request
     return {"data": "somedata"}
+
+
+# Parameters:
+# - speed: The speed we should accelerate the STEVE car to [0,1]
+# -turnVal: The angle to set the tires to [-1,1]
+#
+# Description:
+# - Sets the appropriate pins on the RPi to attenuate speed and angle of the STEVE car’s tires
+#
+# Return:
+# - Returns nothing
+@app.route("/receiveCarInstructions", methods=['POST'])
+def receiveCarInstructions():
+    request_data = request.get_json(silent=True)
+    print(request_data)
+    # do whatever logic needed to process request
+    return {"data": "somedata"}
+
 
 
 if __name__ == '__main__':
