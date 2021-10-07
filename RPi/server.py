@@ -22,7 +22,7 @@ def hello_world():
 # - Returns a JSONObject containing:
 # -status: either “OK” or “FAILED”
 @app.route("/startRoute", methods=['POST'])
-def startRoute():
+def start_route():
     request_data = request.get_json(silent=True)
     print(request_data)
     # do whatever logic needed to process request
@@ -39,7 +39,7 @@ def startRoute():
 # Return:
 # - Returns nothing
 @app.route("/receiveCarInstructions", methods=['POST'])
-def receiveCarInstructions():
+def receive_car_instructions():
     request_data = request.get_json(silent=True)
     print(request_data)
     # do whatever logic needed to process request
