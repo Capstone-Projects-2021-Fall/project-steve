@@ -1,3 +1,6 @@
+import requests
+
+
 class Client:
     target_host = ''
     target_port = ''
@@ -15,7 +18,11 @@ class Client:
     # Return:
     #     - Returns nothing
     def start_route(self, route):
-        pass
+        request_body = {"route": route}
+        url = str(self.target_host) + ":" + str(self.target_port) + "/startRoute"
+        print(url)
+        response = requests.post(url, json=request_body)
+        print(response)
 
     # Parameters:
     #     - speed is a double between 0 and 1, 0 being not moving, 1 being moving at max speed
@@ -28,3 +35,8 @@ class Client:
     #     - Returns nothing
     def send_car_instructions(self, speed, turn_val):
         pass
+
+
+if __name__ == '__main__':
+    client = Client("http://127.0.0.1", 5000)
+    client.start_route("test_route")
