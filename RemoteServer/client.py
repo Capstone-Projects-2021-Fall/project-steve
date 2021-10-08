@@ -35,7 +35,7 @@ class Client:
     #     - Returns nothing
     def send_car_instructions(self, speed, turn_val):
         request_body = {"speed": speed, "turn_val": turn_val}
-        url = str(self.target_host) + ":" + str(self.target_port) + "/sendCarInstructions"
+        url = str(self.target_host) + ":" + str(self.target_port) + "/receiveCarInstructions"
         print(url)
         response = requests.post(url, json=request_body)
         print(response)
