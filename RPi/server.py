@@ -42,9 +42,10 @@ def start_route():
 def receive_car_instructions():
     request_data = request.get_json(silent=True)
     print(request_data)
+    speed = request_data['speed']
+    turn_val = request_data['turn_val']
     # do whatever logic needed to process request
-    return {"data": "somedata"}
-
+    return {"status": "success"}
 
 
 if __name__ == '__main__':
