@@ -3,7 +3,8 @@ class CarControl:
     turn_val = 0
 
     def __init__(self):
-        pass
+        self.speed = 0
+        self.turn_val = 0
 
     # Parameters:
     #     - speed is double that will set the current rc car speed

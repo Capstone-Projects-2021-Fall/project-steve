@@ -1,7 +1,9 @@
 import os
 from flask import Flask, request
+from CarControl import CarControl
 
 app = Flask(__name__)
+carControl = None
 
 
 @app.route("/")
@@ -25,8 +27,7 @@ def hello_world():
 def start_route():
     request_data = request.get_json(silent=True)
     print(request_data)
-    # do whatever logic needed to process request
-    return {"data": "somedata"}
+    return {"status": "success"}
 
 
 # Parameters:
@@ -44,7 +45,8 @@ def receive_car_instructions():
     print(request_data)
     speed = request_data['speed']
     turn_val = request_data['turn_val']
-    # do whatever logic needed to process request
+    carControl.set_speed(speed)
+    carControl.set_turn_val(turn_val)
     return {"status": "success"}
 
 
@@ -52,3 +54,4 @@ if __name__ == '__main__':
 
     # launch the app on localhost
     app.run(host='127.0.0.1', port=5000, debug=True)
+    carControl = CarControl()
