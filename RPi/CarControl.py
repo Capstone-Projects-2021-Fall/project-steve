@@ -23,7 +23,7 @@ class CarControl:
         if speed < .11 or speed > .2:
             print('Invalid speed input, must be between .11 and .2')
         else:
-            kit.continuous_servo[1].throttle = speed
+            kit.continuous_servo[0].throttle = speed
 
     # Parameters:
     #     - None
