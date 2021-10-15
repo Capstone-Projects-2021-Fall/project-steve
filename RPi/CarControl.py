@@ -1,3 +1,5 @@
+import Adafruit_PCA9685
+from adafruit_servokit import ServoKit
 import time
 
 class CarControl:
