@@ -6,10 +6,12 @@ import time
 class CarControl:
     speed = 0
     turn_val = 0
+    kit = ServoKit(channels=16)
 
     def __init__(self):
         self.speed = 0
         self.turn_val = 0
+        self.kit = ServoKit(channels=16)
 
     # Parameters:
     #     - speed is double that will set the current rc car speed
@@ -51,10 +53,10 @@ class CarControl:
         while (self.get_speed() < speed):
             # placeholder servo object
             kit.continuous_servo[0].throttle += step
-            if (kit.continuous_servo[1].throttle >= speed):
-                kit.continuous_servo[1].throttle = speed
+            if (kit.continuous_servo[0].throttle >= speed):
+                kit.continuous_servo[0].throttle = speed
                 return
-            print("Set car speed to", kit.continuous_servo[1].throttle, "(+{0})".format(step))
+            print("Set car speed to", kit.continuous_servo[0].throttle, "(+{0})".format(step))
             time.sleep(interval / 1000)
 
     # Parameters:
@@ -67,7 +69,10 @@ class CarControl:
     #     - Returns nothing
 
     def set_turn_val(self, turn_val):
-        pass
+        if turn_val > 180 or turn_val < 0:
+            print('Invalid turning input, must be between 0 and 180')
+        else:
+            kit.servo[1].angle = turn_val
 
     # Parameters:
     #     - None
@@ -78,7 +83,7 @@ class CarControl:
     # Return:
     #     - Returns turnVal, a double indicating the direction the car is facing
     def get_turn_val(self):
-        pass
+        return kit.servo[1].angle
 
     # Parameters:
     #     - speed is a double that will set the current rc car speed
