@@ -1,10 +1,17 @@
+import Adafruit_PCA9685
+from adafruit_servokit import ServoKit
+import time
+
+
 class CarControl:
     speed = 0
     turn_val = 0
+    kit = ServoKit(channels=16)
 
     def __init__(self):
         self.speed = 0
         self.turn_val = 0
+        self.kit = ServoKit(channels=16)
 
     # Parameters:
     #     - speed is double that will set the current rc car speed
@@ -15,7 +22,10 @@ class CarControl:
     # Return:
     #     - Returns nothing
     def set_speed(self, speed):
-        pass
+        if speed < .11 or speed > .2:
+            print('Invalid speed input, must be between .11 and .2')
+        else:
+            kit.continuous_servo[0].throttle = speed
 
     # Parameters:
     #     - None
@@ -26,7 +36,7 @@ class CarControl:
     # Return:
     #     - Returns current speed as a double
     def get_speed(self):
-        pass
+        return kit.continuous_servo[0].throttle
 
     # Parameters:
     #     - speed is a double that will set the current rc car speed
@@ -38,18 +48,31 @@ class CarControl:
     # Return:
     #     - Returns nothing
     def gradual_speed_up(self, speed, time):
-        pass
+        interval = 200  # ms
+        step = (speed - self.get_speed()) / float((time / interval))
+        while (self.get_speed() < speed):
+            # placeholder servo object
+            kit.continuous_servo[0].throttle += step
+            if (kit.continuous_servo[0].throttle >= speed):
+                kit.continuous_servo[0].throttle = speed
+                return
+            print("Set car speed to", kit.continuous_servo[0].throttle, "(+{0})".format(step))
+            time.sleep(interval / 1000)
 
     # Parameters:
-    #     - turnVal is a double that will set the current direction of the car
+    #     - turnVal is a double that will set the current speed of the car
     #
     # Description:
-    #     - Change the direction of the car to the given angle
+    #     - Change the speed of the car to the given value
     #
     # Return:
     #     - Returns nothing
+
     def set_turn_val(self, turn_val):
-        pass
+        if turn_val > 180 or turn_val < 0:
+            print('Invalid turning input, must be between 0 and 180')
+        else:
+            kit.servo[1].angle = turn_val
 
     # Parameters:
     #     - None
@@ -60,7 +83,7 @@ class CarControl:
     # Return:
     #     - Returns turnVal, a double indicating the direction the car is facing
     def get_turn_val(self):
-        pass
+        return kit.servo[1].angle
 
     # Parameters:
     #     - speed is a double that will set the current rc car speed

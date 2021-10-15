@@ -1,6 +1,6 @@
 class FirebaseHelper:
     api_key = ''
-    firebase_url = ''
+    firebase_url = 'https://steve-2ecd9-default-rtdb.firebaseio.com/'
 
     def __init__(self, api_key, firebase_url):
         self.api_key = api_key
