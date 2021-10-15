@@ -1,3 +1,5 @@
+import time
+
 class CarControl:
     speed = 0
     turn_val = 0
@@ -38,16 +40,26 @@ class CarControl:
     # Return:
     #     - Returns nothing
     def gradual_speed_up(self, speed, time):
-        pass
+        interval = 200 #ms
+        step = (speed-self.get_speed())/float((time/interval))
+        while(self.get_speed() < speed):
+             #placeholder servo object
+             kit.continuous_servo[1].throttle += step 
+             if(kit.continuous_servo[1].throttle >= speed):
+                 kit.continuous_servo[1].throttle = speed
+                 return
+             print("Set car speed to",kit.continuous_servo[1].throttle, "(+{0})".format(step))
+             time.sleep(interval/1000)
 
     # Parameters:
-    #     - turnVal is a double that will set the current direction of the car
+    #     - turnVal is a double that will set the current speed of the car
     #
     # Description:
-    #     - Change the direction of the car to the given angle
+    #     - Change the speed of the car to the given value
     #
     # Return:
     #     - Returns nothing
+	
     def set_turn_val(self, turn_val):
         pass
 
