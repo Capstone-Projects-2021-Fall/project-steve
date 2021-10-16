@@ -45,8 +45,8 @@ def receive_car_instructions():
     print(request_data)
     speed = request_data['speed']
     turn_val = request_data['turn_val']
-    carControl.set_speed(speed)
-    carControl.set_turn_val(turn_val)
+    carControl.set_speed(float(speed))
+    carControl.set_turn_val(float(turn_val))
     return {"status": "success"}
 
 
