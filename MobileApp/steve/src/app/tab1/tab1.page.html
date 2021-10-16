@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      Car Control
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,9 +9,32 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Car Control</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <ion-content>
+    <ion-grid class="ion-padding ion-justify-content-center">
+      <ion-row style="height: 5em;"></ion-row>
+
+      <ion-row class="ion-justify-content-center ion-padding">
+        <ion-button color="primary" (click)="forward()">Forward</ion-button>
+      </ion-row>
+      <ion-row class="ion-justify-content-center ion-padding">
+        <ion-col size="4">
+          <ion-button color="primary" (click)="left()" style="width: 90%;">Left</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button color="primary" (click)="center()" style="width: 90%;">Center</ion-button>
+        </ion-col>
+        <ion-col size="4">
+          <ion-button color="primary" (click)="right()" style="width: 90%;">Right</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center ion-padding">
+        <ion-button color="primary" (click)="stop()">Stop</ion-button>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+
 </ion-content>
