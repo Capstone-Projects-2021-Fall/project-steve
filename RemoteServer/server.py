@@ -66,4 +66,4 @@ def control_car():
 if __name__ == '__main__':
     client = Client("http://10.226.109.23", 5000)
     # launch the app on localhost
-    app.run(host='127.0.0.1', port=9999, debug=True)
+    app.run(host='0.0.0.0', port=9999, debug=True)
