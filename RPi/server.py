@@ -51,7 +51,6 @@ def receive_car_instructions():
 
 
 if __name__ == '__main__':
-
+    carControl = CarControl()
     # launch the app on localhost
     app.run(host='0.0.0.0', port=5000, debug=True)
-    carControl = CarControl()
