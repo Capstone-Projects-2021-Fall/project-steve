@@ -15,13 +15,13 @@ export class Tab1Page {
 
   forward() {
     console.log('forward')
-    this.speed = .12;
+    this.speed = .15;
     this.postToRemoteServer(this.speed, this.turnVal);
   }
 
   left() {
     console.log('left')
-    this.turnVal = 0;
+    this.turnVal = 180;
     this.postToRemoteServer(this.speed, this.turnVal);
   }
 
@@ -33,7 +33,7 @@ export class Tab1Page {
 
   right() {
     console.log('right')
-    this.turnVal = 180;
+    this.turnVal = 0;
     this.postToRemoteServer(this.speed, this.turnVal);
   }
 
@@ -46,7 +46,7 @@ export class Tab1Page {
   postToRemoteServer(speed, turnVal) {
     $.ajax({
       type: "POST",
-      url: "http://127.0.0.1:9999/controlCar",
+      url: "http://10.226.104.75:9999/controlCar",
       data: {
         "speed": speed,
         "turnVal": turnVal
