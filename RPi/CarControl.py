@@ -6,7 +6,7 @@ import time
 class CarControl:
     speed = 0
     turn_val = 0
-    kit = ServoKit(channels=16)
+    kit = None
 
     def __init__(self):
         self.speed = 0
@@ -25,7 +25,7 @@ class CarControl:
         if speed < .11 or speed > .2:
             print('Invalid speed input, must be between .11 and .2')
         else:
-            kit.continuous_servo[0].throttle = speed
+            self.kit.continuous_servo[0].throttle = speed
 
     # Parameters:
     #     - None
@@ -36,7 +36,7 @@ class CarControl:
     # Return:
     #     - Returns current speed as a double
     def get_speed(self):
-        return kit.continuous_servo[0].throttle
+        return self.kit.continuous_servo[0].throttle
 
     # Parameters:
     #     - speed is a double that will set the current rc car speed
@@ -52,11 +52,11 @@ class CarControl:
         step = (speed - self.get_speed()) / float((time / interval))
         while (self.get_speed() < speed):
             # placeholder servo object
-            kit.continuous_servo[0].throttle += step
-            if (kit.continuous_servo[0].throttle >= speed):
-                kit.continuous_servo[0].throttle = speed
+            self.kit.continuous_servo[0].throttle += step
+            if (self.kit.continuous_servo[0].throttle >= speed):
+                self.kit.continuous_servo[0].throttle = speed
                 return
-            print("Set car speed to", kit.continuous_servo[0].throttle, "(+{0})".format(step))
+            print("Set car speed to", self.kit.continuous_servo[0].throttle, "(+{0})".format(step))
             time.sleep(interval / 1000)
 
     # Parameters:
@@ -72,7 +72,7 @@ class CarControl:
         if turn_val > 180 or turn_val < 0:
             print('Invalid turning input, must be between 0 and 180')
         else:
-            kit.servo[1].angle = turn_val
+            self.kit.servo[1].angle = turn_val
 
     # Parameters:
     #     - None
@@ -83,7 +83,7 @@ class CarControl:
     # Return:
     #     - Returns turnVal, a double indicating the direction the car is facing
     def get_turn_val(self):
-        return kit.servo[1].angle
+        return self.kit.servo[1].angle
 
     # Parameters:
     #     - speed is a double that will set the current rc car speed
