@@ -96,3 +96,11 @@ class CarControl:
     #     - Returns nothing
     def gradual_turn(self, turn_val, time):
         pass
+    # Parameters:
+    #     - 
+    #
+    # Description:
+    #     - 
+    #
+    # Return:
+    #     - 
