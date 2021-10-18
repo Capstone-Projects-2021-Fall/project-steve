@@ -1,7 +1,12 @@
 import os
 from flask import Flask, request
+from flask_cors import CORS
+from client import Client
 
 app = Flask(__name__)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+client = None
 
 
 @app.route("/")
@@ -43,12 +48,28 @@ def begin_route_request():
 @app.route("/receiveStatusUpdate", methods=['POST'])
 def receive_status_update():
     request_data = request.get_json(silent=True)
+    speed = request_data['speed']
+    turn_val = request_data['turn_val']
+    datafile = open('data.txt', 'a')
+    print("speed: " + speed, file=datafile)
+    print("turn_val: " + turn_val, file=datafile)
+    datafile.close()
     print(request_data)
     # do whatever logic needed to process request
     return {"data": "somedata"}
 
 
-if __name__ == '__main__':
+@app.route("/controlCar", methods=['POST'])
+def control_car():
+    speed = request.form.get("speed")
+    turn_val = request.form.get("turnVal")
+    client.send_car_instructions(speed, turn_val)
+    print(speed)
+    print(turn_val)
+    return {"status": "success"}
 
+
+if __name__ == '__main__':
+    client = Client("http://10.226.104.62", 5000)
     # launch the app on localhost
-    app.run(host='127.0.0.1', port=9999, debug=True)
+    app.run(host='0.0.0.0', port=9999, debug=True)
