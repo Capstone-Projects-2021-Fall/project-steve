@@ -48,6 +48,12 @@ def begin_route_request():
 @app.route("/receiveStatusUpdate", methods=['POST'])
 def receive_status_update():
     request_data = request.get_json(silent=True)
+    speed = request_data['speed']
+    turn_val = request_data['turn_val']
+    datafile = open('data.txt', 'w')
+    print("speed" + speed, file=datafile)
+    print("turn_val" + turn_val, file=datafile)
+    datafile.close()
     print(request_data)
     # do whatever logic needed to process request
     return {"data": "somedata"}
