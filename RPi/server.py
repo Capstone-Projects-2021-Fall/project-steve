@@ -1,9 +1,11 @@
 import os
 from flask import Flask, request
 from CarControl import CarControl
+from client import Client
 
 app = Flask(__name__)
 carControl = None
+client = None
 
 
 @app.route("/")
@@ -45,6 +47,7 @@ def receive_car_instructions():
     print(request_data)
     speed = request_data['speed']
     turn_val = request_data['turn_val']
+    client.send_status_update(speed, turn_val, None)
     carControl.set_speed(float(speed))
     carControl.set_turn_val(float(turn_val))
     return {"status": "success"}
@@ -52,5 +55,6 @@ def receive_car_instructions():
 
 if __name__ == '__main__':
     carControl = CarControl()
+    client = Client("http://10.226.104.75", 9999)
     # launch the app on localhost
     app.run(host='0.0.0.0', port=5000, debug=True)
