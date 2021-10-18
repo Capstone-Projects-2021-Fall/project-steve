@@ -1,3 +1,5 @@
+import requests
+
 class Client:
     target_host = ''
     target_port = ''
@@ -19,5 +21,9 @@ class Client:
     # Return:
     #     - Returns a JSONObject containing:
     #     - status: either “OK” or “FAILED”
-    def send_status_update(self, speed, turn_val, image):
-        pass
+    def send_status_update(self, speed, turn_val, image=None):
+        request_body = {"speed": speed, "turn_val": turn_val}
+        url = str(self.target_host) + ":" + str(self.target_port) + "/receiveStatusUpdate"
+        print(url)
+        response = requests.post(url, json=request_body)
+        print(response)
