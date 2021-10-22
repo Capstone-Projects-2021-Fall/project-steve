@@ -1,5 +1,6 @@
-import requests
-import steve_util
+import requests,os,time 
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+import pygame
 
 class Client:
 	target_host = ''
@@ -43,16 +44,21 @@ class Client:
 		
 	def start_manual_control(self):
 		print("Starting manual control. Press q to exit.")
-		getch = steve_util.Getch()
-		key = ''
+		pygame.init()
+		key_input = pygame.key.get_pressed()
+		
+		sur_obj=pygame.display.set_mode((400,300))
+		pygame.display.set_caption("Manual car control")
+		
+		fps = 10
 		
 		#initial values
 		speed = 0.0
 		turnVal = 90
 		
 		#increments
-		turn_inc = 45
-		speed_int = .01
+		turn_inc = 90/fps
+		speed_int = .01/fps
 		
 		#limits
 		speed_limit = .15
@@ -61,52 +67,59 @@ class Client:
 		turncapL = 180
 		turncapR = 0
 		
-		keymap = {b'P':"back",b'H':"forward",b'K':"left",b'M':"right"}
+		pressed = False
 		
 		#press q to exit
-		while key != b'q':
-			key = getch()
-			#if an arrow key was pressed
-			if key == b'\xe0':
-				direction = keymap[getch()]
+		#if an arrow key was pressed
+		while not key_input[pygame.K_q]:
+			pressed = False
+			key_input = pygame.key.get_pressed()
+			for eve in pygame.event.get():
+				if eve.type == pygame.QUIT:
+					pygame.quit()
+					sys.exit()
+			#up arrowkey
+			if key_input[pygame.K_UP]:
+				pressed = True
+				if(speed == 0):
+					speed = .11
+				else:
+					speed += speed_int
+			
+			#down arrowkey
+			if key_input[pygame.K_DOWN]:
+				pressed = True
+				if(speed == .11):
+					speed = 0
+				else:
+					speed -= speed_int
+			
+			#left arrowkey
+			if key_input[pygame.K_LEFT]:
+				pressed = True
+				turnVal += turn_inc
 				
-				#up arrowkey
-				if(direction == "forward"):
-					if(speed == 0):
-						speed = .11
-					else:
-						speed += speed_int
-				
-				#down arrowkey
-				if(direction == "back"):
-					if(speed == .11):
-						speed = 0
-					else:
-						speed -= speed_int
-				
-				#left arrowkey
-				if(direction == "left"):
-					turnVal += turn_inc
-					
-				#right arrowkey
-				if(direction == "right"):
-					turnVal -= turn_inc
-					
+			#right arrowkey
+			if key_input[pygame.K_RIGHT]:
+				pressed = True
+				turnVal -= turn_inc
+			
+			if pressed:
 				speed = round(speed,4)
 					
-				speed = max(min([speed,speed_limit]),0)
-				turnVal = max(min(turnVal, 180),0)
+				speed = max(min([speed,speed_limit]),speed_min)
+				turnVal = max(min(turnVal, turncapL),turncapR)
 					
 				print("Setting car values to ",speed, ",",turnVal)
 				self.send_car_instructions(speed,turnVal)
 				
-			else:
-				print("Received unhandled key input: ",chr(key[0])) if key != b'q' else None
-			
+			time.sleep(1/fps)
+		
 		#stop car upon exiting
 		self.send_car_instructions(0,turnVal)
 		
 		print("Exiting manual control")
+		pygame.quit()
 
 
 if __name__ == '__main__':
