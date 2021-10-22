@@ -2,6 +2,7 @@ import os
 from flask import Flask, request
 from CarControl import CarControl
 from client import Client
+import time
 
 app = Flask(__name__)
 carControl = None
@@ -47,9 +48,10 @@ def receive_car_instructions():
     print(request_data)
     speed = request_data['speed']
     turn_val = request_data['turn_val']
-    client.send_status_update(speed, turn_val, None)
     carControl.set_speed(float(speed))
     carControl.set_turn_val(float(turn_val))
+    time.sleep(.2)                              # who knows if this actually does anything
+    client.send_status_update(speed, turn_val, None)
     return {"status": "success"}
 
 
