@@ -2,17 +2,19 @@ import os
 from flask import Flask, request
 from flask_cors import CORS
 from client import Client
+from BehavioralCloningHelper import BehavioralCloningHelper
 
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 client = None
 
+b = BehavioralCloningHelper()
 
 @app.route("/")
 def hello_world():
-    # default route, i.e. home page
-    return "<p>Hello, STEVE!</p>"
+	# default route, i.e. home page
+	return "<p>Hello, STEVE!</p>"
 
 
 # Parameters:
@@ -27,10 +29,10 @@ def hello_world():
 # 	-status: either “OK” or “FAILED”
 @app.route("/beginRouteRequest", methods=['POST'])
 def begin_route_request():
-    request_data = request.get_json(silent=True)
-    print(request_data)
-    # do whatever logic needed to process request
-    return {"data": "somedata"}
+	request_data = request.get_json(silent=True)
+	print(request_data)
+	# do whatever logic needed to process request
+	return {"data": "somedata"}
 
 
 # Parameters:
@@ -47,29 +49,30 @@ def begin_route_request():
 # 	-status: either “OK” or “FAILED”
 @app.route("/receiveStatusUpdate", methods=['POST'])
 def receive_status_update():
-    request_data = request.get_json(silent=True)
-    speed = request_data['speed']
-    turn_val = request_data['turn_val']
-    datafile = open('data.txt', 'a')
-    print("speed: " + speed, file=datafile)
-    print("turn_val: " + turn_val, file=datafile)
-    datafile.close()
-    print(request_data)
-    # do whatever logic needed to process request
-    return {"data": "somedata"}
+	request_data = request.get_json(silent=True)
+	speed = request_data['speed']
+	turn_val = request_data['turn_val']
+	datafile = open('data.txt', 'a')
+	print("speed: " + speed, file=datafile)
+	print("turn_val: " + turn_val, file=datafile)
+	datafile.close()
+	print(request_data)
+	# do whatever logic needed to process request
+	b.train_model(speed,turn_val,None)
+	return {"data": "somedata"}
 
 
 @app.route("/controlCar", methods=['POST'])
 def control_car():
-    speed = request.form.get("speed")
-    turn_val = request.form.get("turnVal")
-    client.send_car_instructions(speed, turn_val)
-    print(speed)
-    print(turn_val)
-    return {"status": "success"}
+	speed = request.form.get("speed")
+	turn_val = request.form.get("turnVal")
+	client.send_car_instructions(speed, turn_val)
+	print(speed)
+	print(turn_val)
+	return {"status": "success"}
 
 
 if __name__ == '__main__':
-    client = Client("http://10.226.104.62", 5000)
-    # launch the app on localhost
-    app.run(host='0.0.0.0', port=9999, debug=True)
+	client = Client("http://10.226.104.62", 5000)
+	# launch the app on localhost
+	app.run(host='0.0.0.0', port=9999, debug=True)
