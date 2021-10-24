@@ -1,4 +1,6 @@
-import requests,os,time 
+import sys
+
+import requests,os,time
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 
@@ -58,7 +60,7 @@ class Client:
 		
 		#increments
 		turn_inc = 90/fps
-		speed_int = .01/fps
+		speed_int = .1/fps
 		
 		#limits
 		speed_limit = .15
@@ -123,7 +125,8 @@ class Client:
 
 
 if __name__ == '__main__':
-	client = Client("http://10.226.109.23", 5000)
+	client = Client("http://10.226.109.208", 5000)
 	# client.start_manual_control()
 	print('testing')
-	client.start_route("test")
+	# client.start_route("test")
+	client.start_manual_control()
