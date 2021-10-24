@@ -51,8 +51,8 @@ def receive_status_update():
     speed = request_data['speed']
     turn_val = request_data['turn_val']
     datafile = open('data.txt', 'a')
-    print("speed: " + speed, file=datafile)
-    print("turn_val: " + turn_val, file=datafile)
+    print("speed: " + str(speed), file=datafile)
+    print("turn_val: " + str(turn_val), file=datafile)
     datafile.close()
     print(request_data)
     # do whatever logic needed to process request
@@ -70,6 +70,6 @@ def control_car():
 
 
 if __name__ == '__main__':
-    client = Client("http://10.226.104.62", 5000)
+    client = Client("http://10.226.109.208", 5000)
     # launch the app on localhost
     app.run(host='0.0.0.0', port=9999, debug=True)
