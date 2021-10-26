@@ -18,8 +18,9 @@ class CameraControl:
     # Return:
     #     - an image
     def get_image(self):
+        image = "steves_eyes.jpg"
         self.camera.start_preview()
-        image = self.camera.capture("steves_eyes.jpg")
+        self.camera.capture(image)
 
         with open(image, "rb") as image:
             f = image.read()
