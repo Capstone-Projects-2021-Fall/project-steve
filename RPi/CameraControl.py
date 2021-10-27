@@ -6,7 +6,7 @@ class CameraControl:
     camera = None
 
     def __init__(self):
-        camera = PiCamera()
+        self.camera = PiCamera()
 
 
     # Parameters:
@@ -26,4 +26,4 @@ class CameraControl:
             f = image.read()
             b = bytearray(f)
 
-        return b
+        return f

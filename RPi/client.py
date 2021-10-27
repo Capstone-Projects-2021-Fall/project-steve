@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests
 from CameraControl import CameraControl
 
@@ -25,12 +26,6 @@ class Client:
         request_body = {"speed": str(speed), "turn_val": str(turn_val), "image": image}
         url = str(self.target_host) + ":" + str(self.target_port) + "/receiveStatusUpdate"
         print(url)
-        response = requests.post(url, json=request_body)
+        response = requests.post(url, data=request_body, headers={'Content-Type': 'application/octet-stream'})
         print(response)
-
-
-if __name__ == '__main__':
-    client = Client()
-    camera = CameraControl()
-    client.send_status_update(0, 0, camera.get_image())
 
