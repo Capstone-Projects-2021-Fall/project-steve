@@ -60,5 +60,15 @@ class FirebaseHelper:
     #         - Active boolean
     #         - Duration integer
     def get_routes(self, location):
-        pass
+        db = self.firebase.database()
+        locations = db.child("route").get()
+        return locations.val()
+
+
+if __name__ == '__main__':
+    firebase_helper = FirebaseHelper()
+    firebase_helper.register_location("test")
+    firebase_helper.register_route("test", "route 3", 2)
+    firebase_helper.register_route("test", "route 4", 37)
+    firebase_helper.get_routes("location")
 
