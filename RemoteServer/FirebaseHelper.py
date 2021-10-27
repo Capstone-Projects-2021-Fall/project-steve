@@ -8,10 +8,10 @@ class FirebaseHelper:
 
         firebaseConfig = {
             "apiKey": "AIzaSyCiBPkwDTFuiOrRtKc3ZKUAh_xwvSb8WSI",
-            "authDomain": "steve-2ecd9.firebaseapp.com",
-            "databaseURL": "https://steve-2ecd9-default-rtdb.firebaseio.com",
-            "projectId": "steve-2ecd9",
-            "storageBucket": "steve-2ecd9.appspot.com",
+            "authDomain": "steve-2efa6.firebaseapp.com",
+            "databaseURL": "https://steve-2efa6-default-rtdb.firebaseio.com",
+            "projectId": "steve-2efa6",
+            "storageBucket": "steve-2efa6.appspot.com",
             "messagingSenderId": "650370236834",
             "appId": "1:650370236834:web:0bca880b2938e86c04f2fb",
             "measurementId": "G-LJ8TNR05TL"
@@ -58,7 +58,3 @@ class FirebaseHelper:
     def get_routes(self, location):
         pass
 
-
-if __name__ == '__main__':
-    fh = FirebaseHelper()
-    fh.register_route("SERC", "route2", "2")
