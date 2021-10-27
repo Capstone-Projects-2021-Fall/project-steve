@@ -44,7 +44,7 @@ class FirebaseHelper:
     #     - Returns nothing
     def register_route(self, location, route, duration):
         db = self.firebase.database()
-        data = {"location": location, "route": route, "duration": duration}
+        data = {"location": location, "name": route, "duration": duration}
         db.child("route").push(data)
 
     # Parameters:
