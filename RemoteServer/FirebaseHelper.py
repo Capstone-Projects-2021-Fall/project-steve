@@ -1,10 +1,23 @@
-class FirebaseHelper:
-    api_key = ''
-    firebase_url = 'https://steve-2ecd9-default-rtdb.firebaseio.com/'
+import pyrebase
 
-    def __init__(self, api_key, firebase_url):
-        self.api_key = api_key
-        self.firebase_url = firebase_url
+
+class FirebaseHelper:
+    firebase = None
+
+    def __init__(self):
+
+        firebaseConfig = {
+            "apiKey": "AIzaSyCiBPkwDTFuiOrRtKc3ZKUAh_xwvSb8WSI",
+            "authDomain": "steve-2ecd9.firebaseapp.com",
+            "databaseURL": "https://steve-2ecd9-default-rtdb.firebaseio.com",
+            "projectId": "steve-2ecd9",
+            "storageBucket": "steve-2ecd9.appspot.com",
+            "messagingSenderId": "650370236834",
+            "appId": "1:650370236834:web:0bca880b2938e86c04f2fb",
+            "measurementId": "G-LJ8TNR05TL"
+        }
+
+        self.firebase = pyrebase.initialize_app(firebaseConfig)
 
     # Parameters:
     #     - location is a string representing the name of building
@@ -44,3 +57,8 @@ class FirebaseHelper:
     #         - Duration integer
     def get_routes(self, location):
         pass
+
+
+if __name__ == '__main__':
+    fh = FirebaseHelper()
+    fh.register_route("SERC", "route2", "2")
