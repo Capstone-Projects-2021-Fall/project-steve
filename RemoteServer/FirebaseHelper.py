@@ -28,7 +28,9 @@ class FirebaseHelper:
     # Return:
     #     - Returns nothing
     def register_location(self, location):
-        pass
+        db = self.firebase.database()
+        data = {"location": location}
+        db.child("location").push(data)
 
     # Parameters:
     #     - location is a string representing the name of the building
