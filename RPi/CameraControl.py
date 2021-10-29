@@ -1,5 +1,6 @@
 from picamera import PiCamera
 import time
+import base64
 
 class CameraControl:
     image = None
@@ -22,8 +23,8 @@ class CameraControl:
         self.camera.start_preview()
         self.camera.capture(image)
 
-        with open(image, "rb") as image:
-            f = image.read()
-            b = bytearray(f)
+        with open(image, 'rb') as f:
+            im_bytes = f.read()
 
-        return f
+        im_b64 = base64.encodebytes(im_bytes)
+        return im_b64

@@ -70,5 +70,9 @@ class Client:
 
 
 if __name__ == '__main__':
-    client = Client("dummy", 0000)
-    client.start_xbox_manual_control()
+    camera = CameraControl()
+    client = Client("http://10.226.111.152", 9999)
+    image = camera.get_image()
+    # print(image)
+    client.send_status_update(5,6,image)
+    # client.start_xbox_manual_control()
