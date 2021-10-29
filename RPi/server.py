@@ -3,6 +3,7 @@ from flask import Flask, request
 from CarControl import CarControl
 from client import Client
 import time
+from CameraControl import CameraControl
 
 app = Flask(__name__)
 carControl = None
@@ -51,12 +52,13 @@ def receive_car_instructions():
     carControl.set_speed(float(speed))
     carControl.set_turn_val(float(turn_val))
     time.sleep(.2)                              # who knows if this actually does anything
-    client.send_status_update(speed, turn_val, None)
+    client.send_status_update(speed, turn_val, camera.get_image())
     return {"status": "success"}
 
 
 if __name__ == '__main__':
     carControl = CarControl()
+    camera = CameraControl()
     client = Client("http://10.226.104.75", 9999)
     # launch the app on localhost
     app.run(host='0.0.0.0', port=5000, debug=True)

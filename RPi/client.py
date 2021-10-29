@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import requests
 import pygame
+from CameraControl import CameraControl
 
 class Client:
     target_host = ''
     target_port = ''
-    camera = None
 
     def __init__(self, target_host, target_port):
         self.target_host = target_host
@@ -23,12 +24,11 @@ class Client:
     #     - Returns a JSONObject containing:
     #     - status: either “OK” or “FAILED”
     def send_status_update(self, speed, turn_val, image=None):
-        request_body = {"speed": speed, "turn_val": turn_val}
+        request_body = {"speed": str(speed), "turn_val": str(turn_val), "image": image}
         url = str(self.target_host) + ":" + str(self.target_port) + "/receiveStatusUpdate"
         print(url)
-        response = requests.post(url, json=request_body)
+        response = requests.post(url, data=request_body, headers={'Content-Type': 'application/octet-stream'})
         print(response)
-
 
     def start_xbox_manual_control(self):
         pygame.init()

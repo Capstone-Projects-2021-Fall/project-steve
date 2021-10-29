@@ -1,7 +1,13 @@
+from picamera import PiCamera
+import time
+
 class CameraControl:
+    image = None
+    camera = None
 
     def __init__(self):
-        pass
+        self.camera = PiCamera()
+
 
     # Parameters:
     #     - None
@@ -12,4 +18,12 @@ class CameraControl:
     # Return:
     #     - an image
     def get_image(self):
-        pass
+        image = "steves_eyes.jpg"
+        self.camera.start_preview()
+        self.camera.capture(image)
+
+        with open(image, "rb") as image:
+            f = image.read()
+            b = bytearray(f)
+
+        return f

@@ -1,10 +1,23 @@
-class FirebaseHelper:
-    api_key = ''
-    firebase_url = 'https://steve-2ecd9-default-rtdb.firebaseio.com/'
+import pyrebase
 
-    def __init__(self, api_key, firebase_url):
-        self.api_key = api_key
-        self.firebase_url = firebase_url
+
+class FirebaseHelper:
+    firebase = None
+
+    def __init__(self):
+
+        firebaseConfig = {
+            "apiKey": "AIzaSyCiBPkwDTFuiOrRtKc3ZKUAh_xwvSb8WSI",
+            "authDomain": "steve-2efa6.firebaseapp.com",
+            "databaseURL": "https://steve-2efa6-default-rtdb.firebaseio.com",
+            "projectId": "steve-2efa6",
+            "storageBucket": "steve-2efa6.appspot.com",
+            "messagingSenderId": "650370236834",
+            "appId": "1:650370236834:web:0bca880b2938e86c04f2fb",
+            "measurementId": "G-LJ8TNR05TL"
+        }
+
+        self.firebase = pyrebase.initialize_app(firebaseConfig)
 
     # Parameters:
     #     - location is a string representing the name of building
@@ -15,7 +28,9 @@ class FirebaseHelper:
     # Return:
     #     - Returns nothing
     def register_location(self, location):
-        pass
+        db = self.firebase.database()
+        data = {"location": location}
+        db.child("location").push(data)
 
     # Parameters:
     #     - location is a string representing the name of the building
@@ -28,7 +43,9 @@ class FirebaseHelper:
     # Return:
     #     - Returns nothing
     def register_route(self, location, route, duration):
-        pass
+        db = self.firebase.database()
+        data = {"location": location, "name": route, "duration": duration}
+        db.child("route").push(data)
 
     # Parameters:
     #     - location is a string representing the name of building
@@ -43,4 +60,15 @@ class FirebaseHelper:
     #         - Active boolean
     #         - Duration integer
     def get_routes(self, location):
-        pass
+        db = self.firebase.database()
+        locations = db.child("route").get()
+        return locations.val()
+
+
+if __name__ == '__main__':
+    firebase_helper = FirebaseHelper()
+    firebase_helper.register_location("test")
+    firebase_helper.register_route("test", "route 3", 2)
+    firebase_helper.register_route("test", "route 4", 37)
+    firebase_helper.get_routes("location")
+
