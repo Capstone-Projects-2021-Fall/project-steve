@@ -33,6 +33,7 @@ class Client:
 
     def start_xbox_manual_control(self):
         carControl = CarControl()
+        camera = CameraControl()
 
         pygame.init()
 
@@ -74,6 +75,8 @@ class Client:
 
             carControl.set_speed(float(throttle))
             carControl.set_turn_val(float(turn))
+
+            self.send_status_update(carControl.get_speed(), carControl.get_turn_val(), camera.get_image())
 
             clock.tick(30)
 
