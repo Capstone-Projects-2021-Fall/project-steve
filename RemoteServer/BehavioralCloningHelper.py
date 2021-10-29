@@ -44,6 +44,17 @@ class BehavioralCloningHelper:
         f.write("{0}{1} -- Speed: {2}, Turnval: {3}\n".format(content, datetime.now(), speed, turn_val))
         f.close()
 
+    def save_to_csv(self, speed, turn_val, image):
+        # header = ['speed', 'turn_val', 'image']
+        data = [str(speed), str(turn_val), str(image)]
+
+        with open('training_data.csv', 'a', encoding='UTF8', newline='') as f:
+            writer = csv.writer(f)
+            # write the header
+            # writer.writerow(header)
+            # write multiple rows
+            writer.writerow(data)
+
     # Parameters:
     #	 - speed is a double between 0 and 1, 0 being not moving, 1 being moving at max speed
     #	 - turnVal is a double between -1 and 1, 0 being straight, -1 being all the way left, 1 being all the way right

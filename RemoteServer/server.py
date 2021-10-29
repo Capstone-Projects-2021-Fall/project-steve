@@ -74,7 +74,7 @@ def receive_status_update():
   #     print("turn_val: " + str(turn_val), file=datafile)
   #     datafile.close()
 
-  b.train_model(speed,turn_val,None)
+  b.save_to_csv(speed, turn_val, 'steves_eyes.jpg')
 
   return {"status": "success"}
 
