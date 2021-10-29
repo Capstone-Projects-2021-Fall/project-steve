@@ -3,17 +3,19 @@ import os
 from flask import Flask, request
 from flask_cors import CORS
 from client import Client
+from BehavioralCloningHelper import BehavioralCloningHelper
 
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 client = None
 
+b = BehavioralCloningHelper()
 
 @app.route("/")
 def hello_world():
-    # default route, i.e. home page
-    return "<p>Hello, STEVE!</p>"
+	# default route, i.e. home page
+	return "<p>Hello, STEVE!</p>"
 
 
 # Parameters:
@@ -28,10 +30,10 @@ def hello_world():
 # 	-status: either “OK” or “FAILED”
 @app.route("/beginRouteRequest", methods=['POST'])
 def begin_route_request():
-    request_data = request.get_json(silent=True)
-    print(request_data)
-    # do whatever logic needed to process request
-    return {"data": "somedata"}
+	request_data = request.get_json(silent=True)
+	print(request_data)
+	# do whatever logic needed to process request
+	return {"data": "somedata"}
 
 
 # Parameters:
@@ -48,40 +50,42 @@ def begin_route_request():
 # 	-status: either “OK” or “FAILED”
 @app.route("/receiveStatusUpdate", methods=['POST'])
 def receive_status_update():
-    data = request.get_data().split(b'&')
-    speed_byte = data[0].split(b'=')
-    speed = speed_byte[1].decode("utf-8")
-    print(speed)
+  data = request.get_data().split(b'&')
+  speed_byte = data[0].split(b'=')
+  speed = speed_byte[1].decode("utf-8")
+  print(speed)
 
-    turn_val_byte = data[1].split(b'=')
-    turn_val = turn_val_byte[1].decode("utf-8")
-    print(turn_val)
+  turn_val_byte = data[1].split(b'=')
+  turn_val = turn_val_byte[1].decode("utf-8")
+  print(turn_val)
 
-    image_byte = data[2].split(b'=')
-    # image = image_byte[1].decode("utf-8")
-    print(image_byte[1])
+  image_byte = data[2].split(b'=')
+  # image = image_byte[1].decode("utf-8")
+  print(image_byte[1])
 
-    datafile = open('data.txt', 'a')
-    print("speed: " + str(speed), file=datafile)
-    print("turn_val: " + str(turn_val), file=datafile)
-    datafile.close()
+  #     datafile = open('data.txt', 'a')
+  #     print("speed: " + str(speed), file=datafile)
+  #     print("turn_val: " + str(turn_val), file=datafile)
+  #     datafile.close()
 
-    # print(request.get_data())
-    # do whatever logic needed to process request
-    return {"data": "somedata"}
+  b.train_model(speed,turn_val,None)
+
+  # print(request.get_data())
+  # do whatever logic needed to process request
+  return {"data": "somedata"}
 
 
 @app.route("/controlCar", methods=['POST'])
 def control_car():
-    speed = request.form.get("speed")
-    turn_val = request.form.get("turnVal")
-    client.send_car_instructions(speed, turn_val)
-    print(speed)
-    print(turn_val)
-    return {"status": "success"}
+	speed = request.form.get("speed")
+	turn_val = request.form.get("turnVal")
+	client.send_car_instructions(speed, turn_val)
+	print(speed)
+	print(turn_val)
+	return {"status": "success"}
 
 
 if __name__ == '__main__':
-    client = Client("http://10.226.109.208", 5000)
-    # launch the app on localhost
-    app.run(host='0.0.0.0', port=9999, debug=True)
+	client = Client("http://10.226.104.62", 5000)
+	# launch the app on localhost
+	app.run(host='0.0.0.0', port=9999, debug=True)
