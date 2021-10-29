@@ -2,6 +2,7 @@
 import requests
 import pygame
 from CameraControl import CameraControl
+from CarControl import CarControl
 
 class Client:
     target_host = ''
@@ -31,6 +32,8 @@ class Client:
         print(response)
 
     def start_xbox_manual_control(self):
+        carControl = CarControl()
+
         pygame.init()
 
         pygame.joystick.init()
@@ -62,7 +65,15 @@ class Client:
             if rtrigger < -0.9:
                 rtrigger = -1.0
 
-            print([xdir, rtrigger])
+            # print([xdir, rtrigger])
+
+            throttle = ((rtrigger + 1) / 2) * .15
+            turn = ((xdir - 1) / -2) * 180
+
+            print([turn, throttle])
+
+            carControl.set_speed(float(throttle))
+            carControl.set_turn_val(float(turn))
 
             clock.tick(30)
 
@@ -70,9 +81,9 @@ class Client:
 
 
 if __name__ == '__main__':
-    camera = CameraControl()
+    # camera = CameraControl()
     client = Client("http://10.226.111.152", 9999)
-    image = camera.get_image()
+    # image = camera.get_image()
     # print(image)
-    client.send_status_update(5,6,image)
-    # client.start_xbox_manual_control()
+    # client.send_status_update(5,6,image)
+    client.start_xbox_manual_control()
