@@ -4,6 +4,8 @@ from flask import Flask, request
 from flask_cors import CORS
 from client import Client
 from BehavioralCloningHelper import BehavioralCloningHelper
+import urllib.parse
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -60,8 +62,12 @@ def receive_status_update():
   print(turn_val)
 
   image_byte = data[2].split(b'=')
-  # image = image_byte[1].decode("utf-8")
-  print(image_byte[1])
+  image = urllib.parse.unquote(str(image_byte[1]))
+  # print(bytes(image[2: len(image) - 1], 'utf-8'))
+
+  image_64_decode = base64.decodebytes(bytes(image[2: len(image) - 1], 'utf-8'))
+  image_result = open('steves_eyes.jpg', 'wb')
+  image_result.write(image_64_decode)
 
   #     datafile = open('data.txt', 'a')
   #     print("speed: " + str(speed), file=datafile)
@@ -70,9 +76,7 @@ def receive_status_update():
 
   b.train_model(speed,turn_val,None)
 
-  # print(request.get_data())
-  # do whatever logic needed to process request
-  return {"data": "somedata"}
+  return {"status": "success"}
 
 
 @app.route("/controlCar", methods=['POST'])
