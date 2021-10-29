@@ -1,3 +1,4 @@
+import json
 import os
 from flask import Flask, request
 from flask_cors import CORS
@@ -49,17 +50,29 @@ def begin_route_request():
 # 	-status: either “OK” or “FAILED”
 @app.route("/receiveStatusUpdate", methods=['POST'])
 def receive_status_update():
-	request_data = request.get_json(silent=True)
-	speed = request_data['speed']
-	turn_val = request_data['turn_val']
-	datafile = open('data.txt', 'a')
-	print("speed: " + speed, file=datafile)
-	print("turn_val: " + turn_val, file=datafile)
-	datafile.close()
-	print(request_data)
-	# do whatever logic needed to process request
-	b.train_model(speed,turn_val,None)
-	return {"data": "somedata"}
+  data = request.get_data().split(b'&')
+  speed_byte = data[0].split(b'=')
+  speed = speed_byte[1].decode("utf-8")
+  print(speed)
+
+  turn_val_byte = data[1].split(b'=')
+  turn_val = turn_val_byte[1].decode("utf-8")
+  print(turn_val)
+
+  image_byte = data[2].split(b'=')
+  # image = image_byte[1].decode("utf-8")
+  print(image_byte[1])
+
+  #     datafile = open('data.txt', 'a')
+  #     print("speed: " + str(speed), file=datafile)
+  #     print("turn_val: " + str(turn_val), file=datafile)
+  #     datafile.close()
+
+  b.train_model(speed,turn_val,None)
+
+  # print(request.get_data())
+  # do whatever logic needed to process request
+  return {"data": "somedata"}
 
 
 @app.route("/controlCar", methods=['POST'])
