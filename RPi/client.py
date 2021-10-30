@@ -35,6 +35,10 @@ class Client:
         carControl = CarControl()
         camera = CameraControl()
 
+        finished_flag = False
+
+        state_data = []
+
         pygame.init()
 
         pygame.joystick.init()
@@ -47,9 +51,12 @@ class Client:
 
         while 1:
             for event in pygame.event.get():
+                # print(event)
                 if event.type == pygame.JOYBUTTONDOWN:
                     print("Joystick button pressed.")
                     print(event)
+                    if event.button == 7:
+                        finished_flag = True
                 if event.type == pygame.JOYAXISMOTION:
                     # print _joystick.get_axis(0)
                     # print event
@@ -76,9 +83,21 @@ class Client:
             carControl.set_speed(float(throttle))
             carControl.set_turn_val(float(turn))
 
-            self.send_status_update(carControl.get_speed(), carControl.get_turn_val(), camera.get_image())
+            state = [carControl.get_speed(), carControl.get_turn_val(), camera.get_image()]
+            state_data.append(state)
+
+            # self.send_status_update(carControl.get_speed(), carControl.get_turn_val(), camera.get_image())
+
+            if finished_flag:
+                break
 
             clock.tick(30)
+
+        print("exited manual control")
+
+        for i in range(0, len(state_data)):
+            print(state_data[i])
+            self.send_status_update(state_data[i][0], state_data[i][1], state_data[i][2])
 
         pygame.quit()
 
