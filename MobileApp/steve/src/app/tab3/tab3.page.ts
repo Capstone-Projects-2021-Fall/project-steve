@@ -9,6 +9,8 @@ import { getDatabase, ref, onValue} from "firebase/database";
 })
 export class Tab3Page {
 
+  routes: JSON[];
+
   constructor() {
 
     const firebaseConfig = {
@@ -30,6 +32,15 @@ export class Tab3Page {
     onValue(routeRef, (snapshot) => {
       const data = snapshot.val();
       console.log(data)
+      var result = [];
+
+      for(var i in data){
+        console.log(data[i])
+        result.push(data[i]);
+      }
+
+      this.routes = result;
+
     });
 
   }
