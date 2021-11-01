@@ -135,12 +135,14 @@ class Client:
 			speed = lines[i][0]
 			turn_val = lines[i][1]
 			self.send_car_instructions(speed, turn_val)
+			time.sleep(.5)
 
 
 if __name__ == '__main__':
-	client = Client("http://10.226.109.208", 5000)
+	client = Client("http://10.226.106.126", 5000)
 	# client.start_manual_control()
 	print('testing')
 	# client.start_route("test")
 	# client.start_manual_control()
 	# client.execute_recorded_route()
+	client.execute_recorded_route()
