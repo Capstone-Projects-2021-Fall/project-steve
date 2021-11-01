@@ -2,6 +2,7 @@
 import requests
 import pygame
 from CameraControl import CameraControl
+from CarControl import CarControl
 
 class Client:
     target_host = ''
@@ -31,6 +32,13 @@ class Client:
         print(response)
 
     def start_xbox_manual_control(self):
+        carControl = CarControl()
+        camera = CameraControl()
+
+        finished_flag = False
+
+        state_data = []
+
         pygame.init()
 
         pygame.joystick.init()
@@ -43,9 +51,12 @@ class Client:
 
         while 1:
             for event in pygame.event.get():
+                # print(event)
                 if event.type == pygame.JOYBUTTONDOWN:
                     print("Joystick button pressed.")
                     print(event)
+                    if event.button == 7:
+                        finished_flag = True
                 if event.type == pygame.JOYAXISMOTION:
                     # print _joystick.get_axis(0)
                     # print event
@@ -62,13 +73,39 @@ class Client:
             if rtrigger < -0.9:
                 rtrigger = -1.0
 
-            print([xdir, rtrigger])
+            # print([xdir, rtrigger])
+
+            throttle = ((rtrigger + 1) / 2) * .15
+            turn = ((xdir - 1) / -2) * 180
+
+            print([turn, throttle])
+
+            carControl.set_speed(float(throttle))
+            carControl.set_turn_val(float(turn))
+
+            state = [carControl.get_speed(), carControl.get_turn_val(), camera.get_image()]
+            state_data.append(state)
+
+            # self.send_status_update(carControl.get_speed(), carControl.get_turn_val(), camera.get_image())
+
+            if finished_flag:
+                break
 
             clock.tick(30)
+
+        print("exited manual control")
+
+        for i in range(0, len(state_data)):
+            print(state_data[i])
+            self.send_status_update(state_data[i][0], state_data[i][1], state_data[i][2])
 
         pygame.quit()
 
 
 if __name__ == '__main__':
-    client = Client("dummy", 0000)
+    # camera = CameraControl()
+    client = Client("http://10.226.111.152", 9999)
+    # image = camera.get_image()
+    # print(image)
+    # client.send_status_update(5,6,image)
     client.start_xbox_manual_control()
