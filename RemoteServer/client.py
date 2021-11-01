@@ -1,3 +1,4 @@
+import csv
 import sys
 
 import requests,os,time
@@ -123,10 +124,25 @@ class Client:
 		print("Exiting manual control")
 		pygame.quit()
 
+	def execute_recorded_route(self):
+		lines = []
+		with open("training_data.csv") as f:
+			content = csv.reader(f)
+			for line in content:
+				lines.append(line)
+
+		for i in range(len(lines)):
+			speed = lines[i][0]
+			turn_val = lines[i][1]
+			self.send_car_instructions(speed, turn_val)
+			time.sleep(.5)
+
 
 if __name__ == '__main__':
-	client = Client("http://10.226.109.208", 5000)
+	client = Client("http://10.226.106.126", 5000)
 	# client.start_manual_control()
 	print('testing')
 	# client.start_route("test")
-	client.start_manual_control()
+	# client.start_manual_control()
+	# client.execute_recorded_route()
+	client.execute_recorded_route()
