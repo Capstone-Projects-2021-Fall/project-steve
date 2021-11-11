@@ -1,5 +1,8 @@
+import datetime
 import json
 import os
+import pathlib
+
 from flask import Flask, request
 from flask_cors import CORS
 from client import Client
@@ -74,7 +77,41 @@ def receive_status_update():
   #     print("turn_val: " + str(turn_val), file=datafile)
   #     datafile.close()
 
-  b.save_to_csv(speed, turn_val, 'steves_eyes.jpg', 'test_route')
+  return {"status": "success"}
+
+
+@app.route("/receiveTrainingData", methods=['POST'])
+def receive_training_data():
+  data = request.get_data().split(b'&')
+
+  route_name_byte = data[0].split(b'=')
+  route_name = route_name_byte[1].decode("utf-8")
+  print(route_name)
+
+  speed_byte = data[1].split(b'=')
+  speed = speed_byte[1].decode("utf-8")
+  print(speed)
+
+  turn_val_byte = data[2].split(b'=')
+  turn_val = turn_val_byte[1].decode("utf-8")
+  print(turn_val)
+
+  image_byte = data[3].split(b'=')
+  image = urllib.parse.unquote(str(image_byte[1]))
+
+  image_64_decode = base64.decodebytes(bytes(image[2: len(image) - 1], 'utf-8'))
+
+  route_path = str(pathlib.Path().resolve()) + "/" + route_name
+  if os.path.exists(route_path) is False:
+      os.makedirs(route_path)
+  datetime_string = str(datetime.datetime.now())
+  datetime_string = datetime_string.replace(" ", "")
+  full_image_path = route_path + '/steves_eyes_' + datetime_string + '.jpg'
+
+  image_result = open(full_image_path, 'wb')
+  image_result.write(image_64_decode)
+
+  b.save_to_csv(speed, turn_val, full_image_path, route_name)
 
   return {"status": "success"}
 
