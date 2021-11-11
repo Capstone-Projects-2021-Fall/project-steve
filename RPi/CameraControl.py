@@ -7,7 +7,7 @@ class CameraControl:
     camera = None
 
     def __init__(self):
-        self.camera = PiCamera()
+        self.camera = None
 
 
     # Parameters:
@@ -20,6 +20,7 @@ class CameraControl:
     #     - an image
     def get_image(self):
         image = "steves_eyes.jpg"
+        self.camera = PiCamera()
         self.camera.start_preview()
         self.camera.capture(image)
         self.camera.stop_preview()
