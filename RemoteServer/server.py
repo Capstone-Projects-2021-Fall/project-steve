@@ -104,9 +104,11 @@ def receive_training_data():
   route_path = str(pathlib.Path().resolve()) + "/" + route_name
   if os.path.exists(route_path) is False:
       os.makedirs(route_path)
+  if os.path.exists(route_path + "/images") is False:
+      os.makedirs(route_path + "/images")
   datetime_string = str(datetime.datetime.now())
   datetime_string = datetime_string.replace(" ", "")
-  full_image_path = route_path + '/steves_eyes_' + datetime_string + '.jpg'
+  full_image_path = route_path + '/images/steves_eyes_' + datetime_string + '.jpg'
 
   image_result = open(full_image_path, 'wb')
   image_result.write(image_64_decode)
