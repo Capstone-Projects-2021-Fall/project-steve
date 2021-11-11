@@ -74,7 +74,7 @@ def receive_status_update():
   #     print("turn_val: " + str(turn_val), file=datafile)
   #     datafile.close()
 
-  b.save_to_csv(speed, turn_val, 'steves_eyes.jpg')
+  b.save_to_csv(speed, turn_val, 'steves_eyes.jpg', 'test_route')
 
   return {"status": "success"}
 
@@ -90,6 +90,6 @@ def control_car():
 
 
 if __name__ == '__main__':
-	client = Client("http://10.226.104.62", 5000)
+	client = Client("http://10.226.104.248", 5000)
 	# launch the app on localhost
 	app.run(host='0.0.0.0', port=9999, debug=True)

@@ -1,3 +1,5 @@
+import os
+import pathlib
 from datetime import datetime
 
 import csv
@@ -44,15 +46,16 @@ class BehavioralCloningHelper:
         f.write("{0}{1} -- Speed: {2}, Turnval: {3}\n".format(content, datetime.now(), speed, turn_val))
         f.close()
 
-    def save_to_csv(self, speed, turn_val, image):
-        # header = ['speed', 'turn_val', 'image']
+    def save_to_csv(self, speed, turn_val, image, route_name):
         data = [str(speed), str(turn_val), str(image)]
 
-        with open('training_data.csv', 'a', encoding='UTF8', newline='') as f:
+        route_path = str(pathlib.Path().resolve()) + "/" + route_name
+
+        if os.path.exists(route_path) is False:
+            os.makedirs(route_path)
+
+        with open(route_path + '/training_data.csv', 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
-            # write the header
-            # writer.writerow(header)
-            # write multiple rows
             writer.writerow(data)
 
     # Parameters:
