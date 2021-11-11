@@ -22,6 +22,8 @@ class CameraControl:
         image = "steves_eyes.jpg"
         self.camera.start_preview()
         self.camera.capture(image)
+        self.camera.stop_preview()
+        self.camera.close()
 
         with open(image, 'rb') as f:
             im_bytes = f.read()
