@@ -7,6 +7,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from client import Client
 from BehavioralCloningHelper import BehavioralCloningHelper
+from FirebaseHelper import FirebaseHelper
 import urllib.parse
 import base64
 
@@ -14,8 +15,8 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 client = None
-
-b = BehavioralCloningHelper()
+behavioral_cloning = None
+firebase = None
 
 @app.route("/")
 def hello_world():
@@ -113,7 +114,9 @@ def receive_training_data():
   image_result = open(full_image_path, 'wb')
   image_result.write(image_64_decode)
 
-  b.save_to_csv(speed, turn_val, full_image_path, route_name)
+  behavioral_cloning.save_to_csv(speed, turn_val, full_image_path, route_name)
+
+  firebase.register_route("test", route_name, 3)
 
   return {"status": "success"}
 
@@ -129,6 +132,8 @@ def control_car():
 
 
 if __name__ == '__main__':
-	client = Client("http://10.226.104.248", 5000)
-	# launch the app on localhost
-	app.run(host='0.0.0.0', port=9999, debug=True)
+    client = Client("http://10.226.104.248", 5000)
+    behavioral_cloning = BehavioralCloningHelper()
+    firebase = FirebaseHelper()
+    # launch the app on localhost
+    app.run(host='0.0.0.0', port=9999, debug=True)
