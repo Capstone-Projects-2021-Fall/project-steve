@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onValue} from "firebase/database";
+import * as $ from "jquery";
 
 @Component({
   selector: 'app-tab3',
@@ -43,6 +44,19 @@ export class Tab3Page {
 
     });
 
+  }
+
+  startRoute(routeName) {
+    $.ajax({
+      type: "POST",
+      url: "http://10.226.108.80:9999/beginRouteRequest",
+      data: {
+        "route_name": routeName
+      },
+      success: function(data) {
+        console.log('successfully posted')
+      }
+    });
   }
 
 }
