@@ -20,8 +20,8 @@ firebase = None
 
 @app.route("/")
 def hello_world():
-	# default route, i.e. home page
-	return "<p>Hello, STEVE!</p>"
+    # default route, i.e. home page
+    return "<p>Hello, STEVE!</p>"
 
 
 # Parameters:
@@ -36,10 +36,11 @@ def hello_world():
 # 	-status: either “OK” or “FAILED”
 @app.route("/beginRouteRequest", methods=['POST'])
 def begin_route_request():
-	request_data = request.get_json(silent=True)
-	print(request_data)
-	# do whatever logic needed to process request
-	return {"data": "somedata"}
+    request_data = request.get_json(silent=True)
+    print(request_data)
+    route_name = request_data['route_name']
+    client.execute_recorded_route(route_name)
+    return {"status": "success"}
 
 
 # Parameters:
@@ -123,12 +124,12 @@ def receive_training_data():
 
 @app.route("/controlCar", methods=['POST'])
 def control_car():
-	speed = request.form.get("speed")
-	turn_val = request.form.get("turnVal")
-	client.send_car_instructions(speed, turn_val)
-	print(speed)
-	print(turn_val)
-	return {"status": "success"}
+    speed = request.form.get("speed")
+    turn_val = request.form.get("turnVal")
+    client.send_car_instructions(speed, turn_val)
+    print(speed)
+    print(turn_val)
+    return {"status": "success"}
 
 
 if __name__ == '__main__':
