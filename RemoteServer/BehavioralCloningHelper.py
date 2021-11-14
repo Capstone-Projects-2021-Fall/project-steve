@@ -175,7 +175,7 @@ class BehavioralCloningHelper:
 
     def network_model(self):
         model = Sequential()
-        model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(160, 320, 3)))
+        model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(480, 720, 3)))
         model.add(Cropping2D(cropping=((70, 25), (0, 0))))
         model.add(Convolution2D(32, 3, 3, activation='relu'))
         model.add(MaxPooling2D())
@@ -263,32 +263,17 @@ class BehavioralCloningHelper:
 
     def read_from_model(self, route_name):
         basePath = str(pathlib.Path().resolve()) + "/" + str(route_name) + "/model.h5"
-        baseImagePath = str(pathlib.Path().resolve()) + "/" + str(route_name) + "/images"
-        # parser = argparse.ArgumentParser(description='Remote Driving')
-        # parser.add_argument(
-        #     'model',
-        #     type=str,
-        #     help='Path to model h5 file. Model should be on the same path.'
-        # )
-        # parser.add_argument(
-        #     baseImagePath,
-        #     type=str,
-        #     nargs='?',
-        #     default='',
-        #     help='Path to image folder. This is where the images from the run will be saved.'
-        # )
-        # args = parser.parse_args()
-
         model = load_model(basePath)
 
-        throttle = 0.2
-        image = Image.open('/Users/blakepatterson/Desktop/CIS 4398/project-steve/RemoteServer/blakes_room/images/steves_eyes_2021-11-1222:02:18.955571.jpg')
+        throttle = 0.13
+        image = Image.open('steves_eyes.jpg')
         image_array = np.asarray(image)
-        stuff = model.predict(image_array[None, :, :, :], batch_size=1)
-        # print(steering_angle, throttle)
-        print(stuff)
+        angle = model.predict(image_array[None, :, :, :], batch_size=1)[0][0]
+        print(throttle, angle)
+        return [throttle, angle]
 
 
 if __name__ == '__main__':
     b = BehavioralCloningHelper()
+    # b.create_model('blakes_room')
     b.read_from_model('blakes_room')

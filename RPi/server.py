@@ -52,7 +52,7 @@ def receive_car_instructions():
     carControl.set_speed(float(speed))
     carControl.set_turn_val(float(turn_val))
     # time.sleep(.2)                              # who knows if this actually does anything
-    client.send_status_update(speed, turn_val, camera.get_image())
+    client.send_status_update(speed, turn_val, None)
     return {"status": "success"}
 
 

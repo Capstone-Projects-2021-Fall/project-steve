@@ -151,3 +151,4 @@ if __name__ == '__main__':
 	# client.start_manual_control()
 	# client.execute_recorded_route()
 	client.execute_recorded_route("blakes_room")
+	# client.send_car_instructions(0, 90)

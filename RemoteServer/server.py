@@ -133,7 +133,7 @@ def control_car():
 
 
 if __name__ == '__main__':
-    client = Client("http://10.226.104.248", 5000)
+    client = Client("http://10.226.106.23", 5000)
     behavioral_cloning = BehavioralCloningHelper()
     firebase = FirebaseHelper()
     # launch the app on localhost
