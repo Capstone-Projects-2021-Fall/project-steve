@@ -59,6 +59,6 @@ def receive_car_instructions():
 if __name__ == '__main__':
     carControl = CarControl()
     camera = CameraControl()
-    client = Client("http://10.226.111.152", 9999)
+    client = Client("http://10.226.107.151", 9999)
     # launch the app on localhost
     app.run(host='0.0.0.0', port=5000, debug=True)
