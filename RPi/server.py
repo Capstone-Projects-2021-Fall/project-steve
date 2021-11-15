@@ -52,13 +52,13 @@ def receive_car_instructions():
     carControl.set_speed(float(speed))
     carControl.set_turn_val(float(turn_val))
     # time.sleep(.2)                              # who knows if this actually does anything
-    # client.send_status_update(speed, turn_val, camera.get_image())
+    client.send_status_update(speed, turn_val, None)
     return {"status": "success"}
 
 
 if __name__ == '__main__':
     carControl = CarControl()
-    # camera = CameraControl()
+    camera = CameraControl()
     client = Client("http://10.226.111.152", 9999)
     # launch the app on localhost
     app.run(host='0.0.0.0', port=5000, debug=True)

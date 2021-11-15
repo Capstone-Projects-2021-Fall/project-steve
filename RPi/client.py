@@ -31,6 +31,13 @@ class Client:
         response = requests.post(url, data=request_body, headers={'Content-Type': 'application/octet-stream'})
         print(response)
 
+    def send_training_data(self, route_name, speed, turn_val, image=None):
+        request_body = {"route_name": str(route_name), "speed": str(speed), "turn_val": str(turn_val), "image": image}
+        url = str(self.target_host) + ":" + str(self.target_port) + "/receiveTrainingData"
+        print(url)
+        response = requests.post(url, data=request_body, headers={'Content-Type': 'application/octet-stream'})
+        print(response)
+
     def start_xbox_manual_control(self):
         carControl = CarControl()
         camera = CameraControl()
@@ -95,9 +102,11 @@ class Client:
 
         print("exited manual control")
 
+        route_name = input("Enter the name of the route: ")
+
         for i in range(0, len(state_data)):
             print(state_data[i])
-            self.send_status_update(state_data[i][0], state_data[i][1], state_data[i][2])
+            self.send_training_data(route_name, state_data[i][0], state_data[i][1], state_data[i][2])
 
         pygame.quit()
 

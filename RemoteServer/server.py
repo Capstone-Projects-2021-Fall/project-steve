@@ -1,9 +1,13 @@
+import datetime
 import json
 import os
+import pathlib
+
 from flask import Flask, request
 from flask_cors import CORS
 from client import Client
 from BehavioralCloningHelper import BehavioralCloningHelper
+from FirebaseHelper import FirebaseHelper
 import urllib.parse
 import base64
 
@@ -11,13 +15,13 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 client = None
-
-b = BehavioralCloningHelper()
+behavioral_cloning = None
+firebase = None
 
 @app.route("/")
 def hello_world():
-	# default route, i.e. home page
-	return "<p>Hello, STEVE!</p>"
+    # default route, i.e. home page
+    return "<p>Hello, STEVE!</p>"
 
 
 # Parameters:
@@ -32,10 +36,11 @@ def hello_world():
 # 	-status: either “OK” or “FAILED”
 @app.route("/beginRouteRequest", methods=['POST'])
 def begin_route_request():
-	request_data = request.get_json(silent=True)
-	print(request_data)
-	# do whatever logic needed to process request
-	return {"data": "somedata"}
+    request_data = request.get_json(silent=True)
+    print(request_data)
+    route_name = request_data['route_name']
+    client.execute_recorded_route(route_name)
+    return {"status": "success"}
 
 
 # Parameters:
@@ -74,22 +79,62 @@ def receive_status_update():
   #     print("turn_val: " + str(turn_val), file=datafile)
   #     datafile.close()
 
-  b.save_to_csv(speed, turn_val, 'steves_eyes.jpg')
+  return {"status": "success"}
+
+
+@app.route("/receiveTrainingData", methods=['POST'])
+def receive_training_data():
+  data = request.get_data().split(b'&')
+
+  route_name_byte = data[0].split(b'=')
+  route_name = route_name_byte[1].decode("utf-8")
+  print(route_name)
+
+  speed_byte = data[1].split(b'=')
+  speed = speed_byte[1].decode("utf-8")
+  print(speed)
+
+  turn_val_byte = data[2].split(b'=')
+  turn_val = turn_val_byte[1].decode("utf-8")
+  print(turn_val)
+
+  image_byte = data[3].split(b'=')
+  image = urllib.parse.unquote(str(image_byte[1]))
+
+  image_64_decode = base64.decodebytes(bytes(image[2: len(image) - 1], 'utf-8'))
+
+  route_path = str(pathlib.Path().resolve()) + "/" + route_name
+  if os.path.exists(route_path) is False:
+      os.makedirs(route_path)
+  if os.path.exists(route_path + "/images") is False:
+      os.makedirs(route_path + "/images")
+  datetime_string = str(datetime.datetime.now())
+  datetime_string = datetime_string.replace(" ", "")
+  full_image_path = route_path + '/images/steves_eyes_' + datetime_string + '.jpg'
+
+  image_result = open(full_image_path, 'wb')
+  image_result.write(image_64_decode)
+
+  behavioral_cloning.save_to_csv(speed, turn_val, full_image_path, route_name)
+
+  firebase.register_route("test", route_name, 3)
 
   return {"status": "success"}
 
 
 @app.route("/controlCar", methods=['POST'])
 def control_car():
-	speed = request.form.get("speed")
-	turn_val = request.form.get("turnVal")
-	client.send_car_instructions(speed, turn_val)
-	print(speed)
-	print(turn_val)
-	return {"status": "success"}
+    speed = request.form.get("speed")
+    turn_val = request.form.get("turnVal")
+    client.send_car_instructions(speed, turn_val)
+    print(speed)
+    print(turn_val)
+    return {"status": "success"}
 
 
 if __name__ == '__main__':
-	client = Client("http://10.226.104.62", 5000)
-	# launch the app on localhost
-	app.run(host='0.0.0.0', port=9999, debug=True)
+    client = Client("http://10.226.106.23", 5000)
+    behavioral_cloning = BehavioralCloningHelper()
+    firebase = FirebaseHelper()
+    # launch the app on localhost
+    app.run(host='0.0.0.0', port=9999, debug=True)

@@ -1,6 +1,12 @@
+import base64
+import os
+import pathlib
+import shutil
 from datetime import datetime
 
 import csv
+
+import argparse
 import cv2
 from os import path
 import numpy as np
@@ -11,6 +17,12 @@ from keras.layers.convolutional import Convolution2D, Cropping2D
 from keras.layers.pooling import MaxPooling2D
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
+from keras.models import load_model
+import socketio
+import eventlet
+import eventlet.wsgi
+from PIL import Image
+from io import BytesIO
 
 
 class BehavioralCloningHelper:
@@ -44,15 +56,16 @@ class BehavioralCloningHelper:
         f.write("{0}{1} -- Speed: {2}, Turnval: {3}\n".format(content, datetime.now(), speed, turn_val))
         f.close()
 
-    def save_to_csv(self, speed, turn_val, image):
-        # header = ['speed', 'turn_val', 'image']
+    def save_to_csv(self, speed, turn_val, image, route_name):
         data = [str(speed), str(turn_val), str(image)]
 
-        with open('training_data.csv', 'a', encoding='UTF8', newline='') as f:
+        route_path = str(pathlib.Path().resolve()) + "/" + route_name
+
+        if os.path.exists(route_path) is False:
+            os.makedirs(route_path)
+
+        with open(route_path + '/training_data.csv', 'a', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
-            # write the header
-            # writer.writerow(header)
-            # write multiple rows
             writer.writerow(data)
 
     # Parameters:
@@ -82,7 +95,7 @@ class BehavioralCloningHelper:
     def balance_data(self, samples, visulization_flag, N=60, K=1, bins=100):
         angles = []
         for line in samples:
-            angles.append(float(line[3]))
+            angles.append(float(line[1]))
 
         n, bins, patches = plt.hist(angles, bins=bins, color='orange', linewidth=0.1)
         angles = np.array(angles)
@@ -162,7 +175,7 @@ class BehavioralCloningHelper:
 
     def network_model(self):
         model = Sequential()
-        model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(160, 320, 3)))
+        model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(480, 720, 3)))
         model.add(Cropping2D(cropping=((70, 25), (0, 0))))
         model.add(Convolution2D(32, 3, 3, activation='relu'))
         model.add(MaxPooling2D())
@@ -170,10 +183,10 @@ class BehavioralCloningHelper:
         model.add(Convolution2D(64, 3, 3, activation='relu'))
         model.add(MaxPooling2D())
         model.add(Dropout(0.1))
-        model.add(Convolution2D(128, 3, 3, activation='relu'))
-        model.add(MaxPooling2D())
-        model.add(Convolution2D(256, 3, 3, activation='relu'))
-        model.add(MaxPooling2D())
+        # model.add(Convolution2D(128, 3, 3, activation='relu'))
+        # model.add(MaxPooling2D())
+        # model.add(Convolution2D(256, 3, 3, activation='relu'))
+        # model.add(MaxPooling2D())
 
         model.add(Flatten())
         model.add(Dense(120))
@@ -194,22 +207,23 @@ class BehavioralCloningHelper:
                 angles = []
 
                 for line in batch_samples:
-                    angle = float(line[3])
-                    c_imagePath = line[0].replace(" ", "")
+                    angle = float(line[1])
+                    c_imagePath = line[2]# .replace(" ", "")
+                    print(c_imagePath)
                     c_image = cv2.imread(c_imagePath)
                     images.append(c_image)
                     angles.append(angle)
 
-                    if train_flag:  # only add left and right images for training data (not for validation)
-                        l_imagePath = line[1].replace(" ", "")
-                        r_imagePath = line[2].replace(" ", "")
-                        l_image = cv2.imread(l_imagePath)
-                        r_image = cv2.imread(r_imagePath)
-
-                        images.append(l_image)
-                        angles.append(angle + correction)
-                        images.append(r_image)
-                        angles.append(angle - correction)
+                    # if train_flag:  # only add left and right images for training data (not for validation)
+                    #     l_imagePath = line[1].replace(" ", "")
+                    #     r_imagePath = line[2].replace(" ", "")
+                    #     l_image = cv2.imread(l_imagePath)
+                    #     r_image = cv2.imread(r_imagePath)
+                    #
+                    #     images.append(l_image)
+                    #     angles.append(angle + correction)
+                    #     images.append(r_image)
+                    #     angles.append(angle - correction)
 
                 # flip image and change the brightness, for each input image, returns other 3 augmented images
                 augmented_images, augmented_angles = self.data_augmentation(images, angles)
@@ -217,3 +231,49 @@ class BehavioralCloningHelper:
                 X_train = np.array(augmented_images)
                 y_train = np.array(augmented_angles)
                 yield shuffle(X_train, y_train)
+
+    def create_model(self, route_name):
+        # load the csv file
+        basePath = str(pathlib.Path().resolve()) + "/" + str(route_name) + "/training_data.csv"
+        print('loading the data...')
+        samples = self.loadData(basePath)
+
+        print(samples)
+
+        # balance the data with smooth the histogram of steering angles
+        samples = self.balance_data(samples, visulization_flag=True)
+
+        # split data into training and validation
+        train_samples, validation_samples = train_test_split(samples, test_size=0.3)
+
+        # compile and train the model using the generator function
+        train_generator = self.generator(train_samples, train_flag=True, batch_size=32)
+        validation_generator = self.generator(validation_samples, train_flag=False, batch_size=32)
+
+        # define the network model
+        model = self.network_model()
+        model.summary()
+
+        nbEpoch = 4
+        model.compile(loss='mse', optimizer='adam')
+
+        # history = model.fit_generator(train_generator, samples_per_epoch=len(train_samples)*12, nb_epoch=nbEpoch, validation_data=validation_generator, nb_val_samples=len(validation_samples))
+
+        model.save(str(pathlib.Path().resolve()) + "/" + str(route_name) + '/model.h5')
+
+    def read_from_model(self, route_name):
+        basePath = str(pathlib.Path().resolve()) + "/" + str(route_name) + "/model.h5"
+        model = load_model(basePath)
+
+        throttle = 0.13
+        image = Image.open('steves_eyes.jpg')
+        image_array = np.asarray(image)
+        angle = model.predict(image_array[None, :, :, :], batch_size=1)[0][0]
+        print(throttle, angle)
+        return [throttle, angle]
+
+
+if __name__ == '__main__':
+    b = BehavioralCloningHelper()
+    # b.create_model('blakes_room')
+    b.read_from_model('blakes_room')
