@@ -113,7 +113,7 @@ class Client:
 
 if __name__ == '__main__':
     # camera = CameraControl()
-    client = Client("http://10.226.111.152", 9999)
+    client = Client("http://10.226.107.151", 9999)
     # image = camera.get_image()
     # print(image)
     # client.send_status_update(5,6,image)

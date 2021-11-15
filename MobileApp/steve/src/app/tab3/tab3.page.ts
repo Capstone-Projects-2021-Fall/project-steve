@@ -49,7 +49,7 @@ export class Tab3Page {
   startRoute(routeName) {
     $.ajax({
       type: "POST",
-      url: "http://10.226.108.80:9999/beginRouteRequest",
+      url: "http://10.226.107.151:9999/beginRouteRequest",
       data: {
         "route_name": routeName
       },

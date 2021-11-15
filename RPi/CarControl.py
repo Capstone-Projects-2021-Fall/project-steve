@@ -71,10 +71,11 @@ class CarControl:
     #     - Returns nothing
 
     def set_turn_val(self, turn_val):
-        if turn_val > 180 or turn_val < 0:
-            print('Invalid turning input, must be between 0 and 180')
-        else:
-            self.kit.servo[1].angle = turn_val
+        if turn_val > 180:
+            turn_val = 180
+        elif turn_val < 0:
+            turn_val = 0
+        self.kit.servo[1].angle = turn_val
 
     # Parameters:
     #     - None
