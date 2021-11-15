@@ -1,5 +1,3 @@
-# S.T.E.V.E.
-
 ![STEVE_Cropped_Logo](https://user-images.githubusercontent.com/56208195/141854169-afe79893-a3eb-4e2d-a4e4-c11ea588ea07.png)
 
 ## System Overview
