@@ -44,8 +44,20 @@ class FirebaseHelper:
     #     - Returns nothing
     def register_route(self, location, route, duration):
         db = self.firebase.database()
-        data = {"location": location, "name": route, "duration": duration}
-        db.child("route").push(data)
+
+        existing_routes = self.get_routes(location)
+        flag = False
+
+        for val in existing_routes:
+            if existing_routes[val]['name'] == route:
+                flag = True
+                break
+
+        if flag is False:
+            data = {"location": location, "name": route, "duration": duration}
+            db.child("route").push(data)
+        else:
+            print('Route already exists')
 
     # Parameters:
     #     - location is a string representing the name of building
@@ -67,8 +79,12 @@ class FirebaseHelper:
 
 if __name__ == '__main__':
     firebase_helper = FirebaseHelper()
-    firebase_helper.register_location("test")
+    # firebase_helper.register_location("apartment")
     firebase_helper.register_route("test", "route 3", 2)
     firebase_helper.register_route("test", "route 4", 37)
-    firebase_helper.get_routes("location")
+    routes = firebase_helper.get_routes("location")
 
+    # print(routes)
+
+    new_route = input("enter a route name: ")
+    firebase_helper.register_route("test location", new_route, 356)

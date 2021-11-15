@@ -124,25 +124,31 @@ class Client:
 		print("Exiting manual control")
 		pygame.quit()
 
-	def execute_recorded_route(self):
+	def execute_recorded_route(self, route_name):
 		lines = []
-		with open("training_data.csv") as f:
-			content = csv.reader(f)
-			for line in content:
-				lines.append(line)
+		try:
 
-		for i in range(len(lines)):
-			speed = lines[i][0]
-			turn_val = lines[i][1]
-			self.send_car_instructions(speed, turn_val)
-			time.sleep(.5)
+			with open(str(route_name) + "/training_data.csv") as f:
+				content = csv.reader(f)
+				for line in content:
+					lines.append(line)
+
+			for i in range(len(lines)):
+				speed = lines[i][0]
+				turn_val = lines[i][1]
+				self.send_car_instructions(speed, turn_val)
+				time.sleep(.5)
+
+		except:
+			print("Route does not exist on Remote Server")
 
 
 if __name__ == '__main__':
-	client = Client("http://10.226.106.126", 5000)
+	client = Client("http://10.226.106.23", 5000)
 	# client.start_manual_control()
 	print('testing')
 	# client.start_route("test")
 	# client.start_manual_control()
 	# client.execute_recorded_route()
-	client.execute_recorded_route()
+	client.execute_recorded_route("blakes_room")
+	# client.send_car_instructions(0, 90)

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      STEVE Control
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,9 +9,34 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
+      <ion-title size="large">STEVE Control</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+
+  <ion-content>
+    <ion-grid class="ion-padding ion-justify-content-center">
+      <ion-row style="height: 5em;"></ion-row>
+      <ion-row class="ion-justify-content-center ion-padding">
+        <ion-col size="6">
+          <ion-button color="primary" (click)="slowDown()" style="width: 90%;">Slow Down</ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button color="primary" (click)="speedUp()" style="width: 90%;">Speed Up</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center ion-padding">
+        <ion-col size="6">
+          <ion-button color="primary" (click)="stop()" style="width: 90%;">Stop</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center ion-padding">
+        <ion-col size="6">
+          <ion-button color="primary" (click)="routeCompleted()" style="width: 90%;">Route Completed</ion-button>
+        </ion-col>
+      </ion-row>
+      
+    </ion-grid>
+  </ion-content>
+
 </ion-content>
