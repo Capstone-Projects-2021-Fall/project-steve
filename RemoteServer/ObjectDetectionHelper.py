@@ -2,6 +2,13 @@ import cv2
 from matplotlib import pyplot as plt
 import pathlib
 
+import Adafruit_PCA9685
+from adafruit_servokit import ServoKit
+import time
+
+from picamera import PiCamera
+import time
+
 class ObjectDetectionHelper:
     detector = None
 
@@ -21,6 +28,7 @@ class ObjectDetectionHelper:
     #         - a Boolean value representing whether there is or isn’t an object present
     #         - a Boolean value representing which direction to turn in to avoid it (false for left, true for right)
     def detect_obstacle(self, image):
+        detected = False
         img = cv2.imread(image)
   
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -28,36 +36,66 @@ class ObjectDetectionHelper:
   
         basePath = str(pathlib.Path().resolve()) + "/HaarCascade/"
 
-        #stop_data = cv2.CascadeClassifier(basePath + 'stop_data.xml')
+        stop_data = cv2.CascadeClassifier('stop_data.xml')
         face_data = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         cat_data = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalcatface.xml')
-        lower_body_data = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lowerbody.xml')
+        full_body_data = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
+        #lower_body_data = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_lowerbody.xml')
   
-        #found_stop = stop_data.detectMultiScale(img_gray, minSize =(20, 20))
+        found_stop = stop_data.detectMultiScale(img_gray, minSize =(20, 20))
 
         found_face = face_data.detectMultiScale(img_gray, minSize =(20, 20))
 
         found_cat = cat_data.detectMultiScale(img_gray, minSize =(20, 20))
 
-        found_lower_body = lower_body_data.detectMultiScale(img_gray, minSize =(20, 20))
+        found_body = full_body_data.detectMultiScale(img_gray, minSize =(20, 20))
+
+        #found_lower_body = lower_body_data.detectMultiScale(img_gray, minSize =(20, 20))
   
-        #amount_found = len(found_stop)
-        amount_found = len(found_face)
+        amount_found = len(found_stop)
+        amount_found += len(found_face)
         amount_found += len(found_cat)
-        amount_found += len(found_lower_body)
-  
+        amount_found += len(found_body)
+        #amount_found += len(found_lower_body)
+ 
+        #found = [face_data, found_cat, lower_body_data]
         if amount_found != 0:
-            print("Object Found")
-            for (x, y, width, height) in found:
+            detected = True
+            #for i in range(found):
+                #for (x, y, width, height) in found[i]:
           
-                cv2.rectangle(img_rgb, (x, y), 
-                            (x + height, y + width), 
-                            (0, 255, 0), 5)
+                    #cv2.rectangle(img_rgb, (x, y), 
+                                #(x + height, y + width), 
+                                #(0, 255, 0), 5)
           
        # plt.subplot(1, 1, 1)
        # plt.imshow(img_rgb)
        # plt.show()
+        return detected
 
 if __name__ == '__main__':
-    detector = ObjectDetectionHelper()
-    detector.detect_obstacle("steves_eyes.jpg")
+    kit = ServoKit(channels=16)
+    kit.continuous_servo[0].throttle = 0.15
+    time.sleep(0.1)
+    kit.continuous_servo[0].throttle = 0.12
+    camera = PiCamera()
+
+    while(True):
+        image = "demo.jpg"
+        camera.start_preview()
+        camera.capture(image)
+
+        detector = ObjectDetectionHelper()
+        if (detector.detect_obstacle("demo.jpg") == True): 
+            print("IMAGE")
+            kit.continuous_servo[0].throttle = 0
+            message = input("Continue?")
+            if (message != "y"):
+                break
+            
+        else:
+           kit.continuous_servo[0].throttle = 0.12
+           print("FUCKING DETECT")
+
+
+
