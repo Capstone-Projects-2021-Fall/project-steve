@@ -36,10 +36,10 @@ def hello_world():
 # 	-status: either “OK” or “FAILED”
 @app.route("/beginRouteRequest", methods=['POST'])
 def begin_route_request():
-    request_data = request.get_json(silent=True)
-    print(request_data)
-    route_name = request_data['route_name']
-    client.execute_recorded_route(route_name)
+    request_data = request.get_data().split(b'&')
+    route_name = request_data[0].split(b'=')[1].decode("utf-8")
+    print(route_name)
+    client.execute_recorded_route(str(route_name))
     return {"status": "success"}
 
 
