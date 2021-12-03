@@ -30,6 +30,7 @@ class Client:
         print(url)
         response = requests.post(url, data=request_body, headers={'Content-Type': 'application/octet-stream'})
         print(response)
+        return response
 
     def send_training_data(self, route_name, speed, turn_val, image=None):
         request_body = {"route_name": str(route_name), "speed": str(speed), "turn_val": str(turn_val), "image": image}
@@ -37,6 +38,7 @@ class Client:
         print(url)
         response = requests.post(url, data=request_body, headers={'Content-Type': 'application/octet-stream'})
         print(response)
+        return response
 
     def start_xbox_manual_control(self):
         carControl = CarControl()

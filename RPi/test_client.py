@@ -16,7 +16,5 @@ class TestClient(TestCase):
 
 	def test_send_status_update(self):
 		# test that status updates are processed by the server
-		request_body = {"speed": str(5), "turn_val": str(5), "image": None}
-		url = str(client.target_host) + ":" + str(client.target_port) + "/receiveStatusUpdate"
-		response = requests.post(url, data=request_body, headers={'Content-Type': 'application/octet-stream'})
-		self.assertEqual(json.loads(response.content)["status"], "success")
+		result = client.send_status_update(.12, 90, "000000000")
+		self.assertEqual(result["status"], "success")
