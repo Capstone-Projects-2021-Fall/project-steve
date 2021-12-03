@@ -27,6 +27,7 @@ class Client:
 		print(url)
 		response = requests.post(url, json=request_body)
 		print(response)
+		return response
 
 	# Parameters:
 	#	 - speed is a double between 0 and 1, 0 being not moving, 1 being moving at max speed
@@ -43,6 +44,7 @@ class Client:
 		print(url)
 		response = requests.post(url, json=request_body)
 		print(response)
+		return response
 		
 		
 	def start_manual_control(self):
