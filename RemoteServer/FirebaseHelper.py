@@ -80,11 +80,17 @@ class FirebaseHelper:
 if __name__ == '__main__':
     firebase_helper = FirebaseHelper()
     # firebase_helper.register_location("apartment")
-    firebase_helper.register_route("test", "route 3", 2)
-    firebase_helper.register_route("test", "route 4", 37)
+    # firebase_helper.register_route("test", "route 3", 2)
+    # firebase_helper.register_route("test", "route 4", 37)
     routes = firebase_helper.get_routes("location")
 
-    # print(routes)
+    print(routes)
 
-    new_route = input("enter a route name: ")
-    firebase_helper.register_route("test location", new_route, 356)
+    s = ""
+    for key, value in routes.items():
+        s = s + value["name"] + ", "
+
+    print(s)
+
+    # new_route = input("enter a route name: ")
+    # firebase_helper.register_route("test location", new_route, 356)
