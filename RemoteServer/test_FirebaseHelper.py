@@ -23,4 +23,7 @@ class TestFirebaseHelper(TestCase):
         self.assertTrue(flag)
 
     def test_get_routes(self):
-        self.fail()
+        result = bool(firebaseHelper.get_routes("location"))
+        print(firebaseHelper.get_routes("location"))
+        self.assertTrue(result)
+
