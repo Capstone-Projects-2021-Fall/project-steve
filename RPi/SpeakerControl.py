@@ -1,8 +1,11 @@
+import pyttsx3
+
 class SpeakerControl:
     volume = 0
+    engine = None
 
     def __init__(self):
-        pass
+        self.engine = pyttsx3.init()
 
     # Parameters:
     #     - volume is an int indicating the desired volume level for speakers
@@ -13,7 +16,10 @@ class SpeakerControl:
     # Return:
     #     - Returns nothing
     def set_volume(self, volume):
-        pass
+        if 0.0 <= volume <= 1.0:
+            self.engine.setProperty('volume', volume)
+            self.engine.runAndWait()
+        self.engine.stop()
 
     # Parameters:
     #     - None
