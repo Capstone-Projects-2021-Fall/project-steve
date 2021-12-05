@@ -2,12 +2,12 @@ import cv2
 from matplotlib import pyplot as plt
 import pathlib
 
-import Adafruit_PCA9685
-from adafruit_servokit import ServoKit
-import time
-
-from picamera import PiCamera
-import time
+# import Adafruit_PCA9685
+# from adafruit_servokit import ServoKit
+# import time
+#
+# from picamera import PiCamera
+# import time
 
 class ObjectDetectionHelper:
     detector = None
@@ -73,29 +73,29 @@ class ObjectDetectionHelper:
        # plt.show()
         return detected
 
-if __name__ == '__main__':
-    kit = ServoKit(channels=16)
-    kit.continuous_servo[0].throttle = 0.15
-    time.sleep(0.1)
-    kit.continuous_servo[0].throttle = 0.12
-    camera = PiCamera()
-
-    while(True):
-        image = "demo.jpg"
-        camera.start_preview()
-        camera.capture(image)
-
-        detector = ObjectDetectionHelper()
-        if (detector.detect_obstacle("demo.jpg") == True): 
-            print("IMAGE")
-            kit.continuous_servo[0].throttle = 0
-            message = input("Continue?")
-            if (message != "y"):
-                break
-            
-        else:
-           kit.continuous_servo[0].throttle = 0.12
-           print("FUCKING DETECT")
-
+# if __name__ == '__main__':
+#     # kit = ServoKit(channels=16)
+#     # kit.continuous_servo[0].throttle = 0.15
+#     # time.sleep(0.1)
+#     # kit.continuous_servo[0].throttle = 0.12
+#     # camera = PiCamera()
+#     #
+#     # while(True):
+#     #     image = "demo.jpg"
+#     #     camera.start_preview()
+#     #     camera.capture(image)
+#     #
+#     #     detector = ObjectDetectionHelper()
+#     #     if (detector.detect_obstacle("demo.jpg") == True):
+#     #         print("IMAGE")
+#     #         kit.continuous_servo[0].throttle = 0
+#     #         message = input("Continue?")
+#     #         if (message != "y"):
+#     #             break
+#     #
+#     #     else:
+#     #        kit.continuous_servo[0].throttle = 0.12
+#     #        print("FUCKING DETECT")
+#     #
 
 
