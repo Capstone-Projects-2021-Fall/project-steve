@@ -30,7 +30,7 @@ class SpeakerControl:
     # Return:
     #     - Returns volume as an int
     def get_volume(self):
-        pass
+        return self.engine.getProperty('volume')
 
     # Parameters:
     #     - message is the string which dictates the message the speakers will play
