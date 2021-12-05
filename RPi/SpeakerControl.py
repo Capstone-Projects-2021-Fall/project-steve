@@ -41,5 +41,11 @@ class SpeakerControl:
     # Return:
     #     - Returns nothing
     def play_message(self, message):
-        pass
+        self.engine.setProperty('rate', 125)
+        voices = self.engine.getProperty('voices')
+        self.engine.setProperty('voice', voices[11].id)
+
+        self.engine.say(message)
+        self.engine.runAndWait()
+        self.engine.stop()
 
