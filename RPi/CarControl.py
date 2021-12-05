@@ -22,11 +22,10 @@ class CarControl:
     # Return:
     #     - Returns nothing
     def set_speed(self, speed):
-        #if speed == 0:
-          #  self.kit.continuous_servo[0].throttle = 0
-        # elif speed < .11 or speed > .2:
-          #  print('Invalid speed input, must be between .11 and .2')
-        # else:
+        if speed < 0:
+            speed = 0
+        elif speed > .15:
+            speed = .15
         self.kit.continuous_servo[0].throttle = speed
 
     # Parameters:
