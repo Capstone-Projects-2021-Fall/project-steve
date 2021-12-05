@@ -84,7 +84,7 @@ if __name__ == '__main__':
     object_detection_instructions = [
         {"speed": .12, "turn_val": 0},
         {"speed": .12, "turn_val": 180},
-        {"speed": .12, "turn_val": 90},
+        {"speed": .12, "turn_val": 180},
         {"speed": .12, "turn_val": 90},
         {"speed": .12, "turn_val": 90},
         {"speed": .12, "turn_val": 90}
@@ -103,7 +103,9 @@ if __name__ == '__main__':
                 speed, turn_val = object_detection_instructions[i]['speed'], object_detection_instructions[i]['turn_val']
                 kit.continuous_servo[0].throttle = speed
                 kit.servo[1].angle = turn_val
-                time.sleep(1)
+                time.sleep(.5)
+            
+            kit.continuous_servo[0].throttle = 0
             break
 
         else:
