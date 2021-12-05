@@ -73,6 +73,7 @@ class ObjectDetectionHelper:
        # plt.show()
         return detected
 
+
 if __name__ == '__main__':
     kit = ServoKit(channels=16)
     kit.continuous_servo[0].throttle = 0.15
@@ -80,18 +81,30 @@ if __name__ == '__main__':
     kit.continuous_servo[0].throttle = 0.12
     camera = PiCamera()
 
+    object_detection_instructions = [
+        {"speed": .12, "turn_val": 0},
+        {"speed": .12, "turn_val": 180},
+        {"speed": .12, "turn_val": 90},
+        {"speed": .12, "turn_val": 90},
+        {"speed": .12, "turn_val": 90},
+        {"speed": .12, "turn_val": 90}
+    ]
+
     while(True):
         image = "demo.jpg"
         camera.start_preview()
         camera.capture(image)
 
         detector = ObjectDetectionHelper()
-        if (detector.detect_obstacle("demo.jpg") == True):
+        if detector.detect_obstacle("demo.jpg"):
             print("Detected")
-            kit.continuous_servo[0].throttle = 0
-            message = input("Continue?")
-            if (message != "y"):
-                break
+
+            for i in range(len(object_detection_instructions)):
+                speed, turn_val = object_detection_instructions[i]['speed'], object_detection_instructions[i]['turn_val']
+                kit.continuous_servo[0].throttle = speed
+                kit.servo[1].angle = turn_val
+                time.sleep(1)
+            break
 
         else:
            kit.continuous_servo[0].throttle = 0.12
