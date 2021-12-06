@@ -2,12 +2,12 @@ import cv2
 from matplotlib import pyplot as plt
 import pathlib
 
-# import Adafruit_PCA9685
-# from adafruit_servokit import ServoKit
-# import time
-#
-# from picamera import PiCamera
-# import time
+import Adafruit_PCA9685
+from adafruit_servokit import ServoKit
+import time
+
+from picamera import PiCamera
+import time
 
 class ObjectDetectionHelper:
     detector = None
@@ -73,29 +73,41 @@ class ObjectDetectionHelper:
        # plt.show()
         return detected
 
-# if __name__ == '__main__':
-#     # kit = ServoKit(channels=16)
-#     # kit.continuous_servo[0].throttle = 0.15
-#     # time.sleep(0.1)
-#     # kit.continuous_servo[0].throttle = 0.12
-#     # camera = PiCamera()
-#     #
-#     # while(True):
-#     #     image = "demo.jpg"
-#     #     camera.start_preview()
-#     #     camera.capture(image)
-#     #
-#     #     detector = ObjectDetectionHelper()
-#     #     if (detector.detect_obstacle("demo.jpg") == True):
-#     #         print("IMAGE")
-#     #         kit.continuous_servo[0].throttle = 0
-#     #         message = input("Continue?")
-#     #         if (message != "y"):
-#     #             break
-#     #
-#     #     else:
-#     #        kit.continuous_servo[0].throttle = 0.12
-#     #        print("FUCKING DETECT")
-#     #
 
+if __name__ == '__main__':
+    kit = ServoKit(channels=16)
+    kit.continuous_servo[0].throttle = 0.15
+    time.sleep(0.1)
+    kit.continuous_servo[0].throttle = 0.12
+    camera = PiCamera()
 
+    object_detection_instructions = [
+        {"speed": .12, "turn_val": 0},
+        {"speed": .12, "turn_val": 180},
+        {"speed": .12, "turn_val": 180},
+        {"speed": .12, "turn_val": 90},
+        {"speed": .12, "turn_val": 90},
+        {"speed": .12, "turn_val": 90}
+    ]
+
+    while(True):
+        image = "demo.jpg"
+        camera.start_preview()
+        camera.capture(image)
+
+        detector = ObjectDetectionHelper()
+        if detector.detect_obstacle("demo.jpg"):
+            print("Detected")
+
+            for i in range(len(object_detection_instructions)):
+                speed, turn_val = object_detection_instructions[i]['speed'], object_detection_instructions[i]['turn_val']
+                kit.continuous_servo[0].throttle = speed
+                kit.servo[1].angle = turn_val
+                time.sleep(.5)
+            
+            kit.continuous_servo[0].throttle = 0
+            break
+
+        else:
+           kit.continuous_servo[0].throttle = 0.12
+           print("Nothing Detected")
